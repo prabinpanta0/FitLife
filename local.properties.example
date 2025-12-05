@@ -1,0 +1,14 @@
+# local.properties.example
+# Copy this file to local.properties and fill in your values
+
+# Android SDK path (update to your local path)
+sdk.dir=/path/to/your/Android/Sdk
+
+# ===========================================
+# API KEYS
+# ===========================================
+
+# Google Maps API Key
+# Get from: https://console.cloud.google.com/google/maps-apis
+# Enable "Maps SDK for Android" for your project
+MAPS_API_KEY=YOUR_GOOGLE_MAPS_API_KEY_HERE

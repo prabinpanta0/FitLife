@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/HomeFragment"
+        android:icon="@drawable/ic_home"
+        android:title="@string/nav_home" />
+    <item
+        android:id="@+id/RoutinesFragment"
+        android:icon="@drawable/ic_fitness"
+        android:title="@string/nav_routines" />
+    <item
+        android:id="@+id/ChecklistFragment"
+        android:icon="@drawable/ic_checklist"
+        android:title="@string/nav_checklist" />
+    <item
+        android:id="@+id/MapFragment"
+        android:icon="@drawable/ic_map"
+        android:title="@string/nav_map" />
+    <item
+        android:id="@+id/ProfileFragment"
+        android:icon="@drawable/ic_profile"
+        android:title="@string/nav_profile" />
+</menu>

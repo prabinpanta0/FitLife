@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme - Dark Mode (Warm Ink) -->
+    <style name="Base.Theme.FitLife" parent="Theme.Material3.Dark.NoActionBar">
+        <!-- Primary brand colors - Lighter for dark theme -->
+        <item name="colorPrimary">@color/primary_dark_theme</item>
+        <item name="colorPrimaryVariant">@color/primary_light</item>
+        <item name="colorOnPrimary">@color/warm_ink</item>
+        <item name="colorPrimaryContainer">@color/primary_variant</item>
+        <item name="colorOnPrimaryContainer">@color/primary_light</item>
+
+        <!-- Secondary brand colors -->
+        <item name="colorSecondary">@color/secondary_dark_theme</item>
+        <item name="colorSecondaryVariant">@color/secondary_light</item>
+        <item name="colorOnSecondary">@color/warm_ink</item>
+        <item name="colorSecondaryContainer">@color/secondary_variant</item>
+        <item name="colorOnSecondaryContainer">@color/secondary_light</item>
+
+        <!-- Background colors - Warm Ink (darker Cloud Dancer) -->
+        <item name="android:colorBackground">@color/warm_ink</item>
+        <item name="colorSurface">@color/warm_ink_surface</item>
+        <item name="colorOnSurface">@color/text_primary_dark</item>
+        <item name="colorSurfaceVariant">@color/warm_ink_surface_variant</item>
+        <item name="colorOnSurfaceVariant">@color/text_secondary_dark</item>
+
+        <!-- Error colors -->
+        <item name="colorError">@color/error_dark_theme</item>
+        <item name="colorOnError">@color/warm_ink</item>
+
+        <!-- Status bar - Warm Ink -->
+        <item name="android:statusBarColor">@color/warm_ink</item>
+        <item name="android:navigationBarColor">@color/warm_ink_surface</item>
+        <item name="android:windowLightStatusBar">false</item>
+
+        <!-- Ripple effect -->
+        <item name="colorControlHighlight">@color/primary_dark_theme</item>
+
+        <!-- Card background for dark theme -->
+        <item name="fitlife_cardBackground">@color/card_background_dark</item>
+        <item name="fitlife_cardStroke">@color/card_stroke_dark</item>
+
+        <!-- Bottom navigation colors for dark theme -->
+        <item name="fitlife_bottomNavBackground">@color/warm_ink_surface</item>
+    </style>
+
+    <!-- Splash Screen Theme - Dark Mode -->
+    <style name="Theme.FitLife.Splash" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/warm_ink</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_fitness_splash</item>
+        <item name="windowSplashScreenIconBackgroundColor">@color/primary_dark_theme</item>
+        <item name="postSplashScreenTheme">@style/Theme.FitLife</item>
+    </style>
+
+    <!-- Bottom Navigation Style - Dark Mode -->
+    <style name="Widget.FitLife.BottomNavigation" parent="Widget.Material3.BottomNavigationView">
+        <item name="backgroundTint">@color/warm_ink_surface</item>
+        <item name="itemIconTint">@color/bottom_nav_item_color_dark</item>
+        <item name="itemTextColor">@color/bottom_nav_item_color_dark</item>
+        <item name="elevation">8dp</item>
+    </style>
+</resources>

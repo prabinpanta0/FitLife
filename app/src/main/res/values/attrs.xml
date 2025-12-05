@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Custom theme attributes for FitLife -->
+    <attr name="fitlife_cardBackground" format="color" />
+    <attr name="fitlife_cardStroke" format="color" />
+    <attr name="fitlife_bottomNavBackground" format="color" />
+</resources>
