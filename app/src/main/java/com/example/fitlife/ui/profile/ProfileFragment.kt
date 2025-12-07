@@ -22,8 +22,8 @@ import com.example.fitlife.utils.SessionManager
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.switchmaterial.SwitchMaterial
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
+import com.google.firebase.Firebase
+import com.google.firebase.auth.auth
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import java.io.File

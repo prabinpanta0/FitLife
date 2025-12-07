@@ -12,9 +12,9 @@ import com.example.fitlife.FitLifeApplication
 import com.example.fitlife.R
 import com.example.fitlife.databinding.FragmentLoginBinding
 import com.example.fitlife.utils.SessionManager
+import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
+import com.google.firebase.auth.auth
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 
