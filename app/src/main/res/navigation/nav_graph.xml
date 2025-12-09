@@ -55,6 +55,13 @@
         android:label="Home"
         tools:layout="@layout/fragment_home">
         <action
+            android:id="@+id/action_home_to_login"
+            app:destination="@id/LoginFragment"
+            app:popUpTo="@id/nav_graph"
+            app:popUpToInclusive="true"
+            app:enterAnim="@anim/fade_in"
+            app:exitAnim="@anim/slide_out_right" />
+        <action
             android:id="@+id/action_home_to_addRoutine"
             app:destination="@id/AddRoutineFragment"
             app:enterAnim="@anim/slide_in_right"

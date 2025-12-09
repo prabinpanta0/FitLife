@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
@@ -20,6 +21,7 @@ import com.example.fitlife.R
 import com.example.fitlife.utils.PermissionManager
 import com.example.fitlife.utils.SessionManager
 import com.google.android.material.button.MaterialButton
+import com.google.android.material.card.MaterialCardView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.switchmaterial.SwitchMaterial
 import com.google.firebase.Firebase
@@ -27,6 +29,7 @@ import com.google.firebase.auth.auth
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import java.io.File
+import java.io.FileOutputStream
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -34,6 +37,8 @@ import java.util.Locale
 class ProfileFragment : Fragment() {
 
     private lateinit var tvAvatarInitials: TextView
+    private lateinit var ivProfilePhoto: ImageView
+    private lateinit var cardAvatar: MaterialCardView
     private lateinit var tvUserName: TextView
     private lateinit var tvUserEmail: TextView
     private lateinit var tvMemberSince: TextView
@@ -90,8 +95,7 @@ class ProfileFragment : Fragment() {
         if (success) {
             currentPhotoUri?.let { uri ->
                 profilePhotoUri = uri
-                Toast.makeText(requireContext(), getString(R.string.photo_captured), Toast.LENGTH_SHORT).show()
-                // In a real app, save this URI to user profile and display it
+                saveAndDisplayProfilePhoto(uri)
             }
         }
     }
@@ -100,9 +104,12 @@ class ProfileFragment : Fragment() {
         ActivityResultContracts.GetContent()
     ) { uri ->
         uri?.let {
-            profilePhotoUri = it
-            Toast.makeText(requireContext(), getString(R.string.photo_selected), Toast.LENGTH_SHORT).show()
-            // In a real app, save this URI to user profile and display it
+            // Copy the picked image to app's internal storage for persistence
+            val savedUri = copyImageToInternalStorage(it)
+            savedUri?.let { saved ->
+                profilePhotoUri = saved
+                saveAndDisplayProfilePhoto(saved)
+            }
         }
     }
 
@@ -126,6 +133,8 @@ class ProfileFragment : Fragment() {
 
     private fun initViews(view: View) {
         tvAvatarInitials = view.findViewById(R.id.tvAvatarInitials)
+        ivProfilePhoto = view.findViewById(R.id.ivProfilePhoto)
+        cardAvatar = view.findViewById(R.id.cardAvatar)
         tvUserName = view.findViewById(R.id.tvUserName)
         tvUserEmail = view.findViewById(R.id.tvUserEmail)
         tvMemberSince = view.findViewById(R.id.tvMemberSince)
@@ -138,8 +147,9 @@ class ProfileFragment : Fragment() {
         llAbout = view.findViewById(R.id.llAbout)
         btnLogout = view.findViewById(R.id.btnLogout)
 
-        // Load dark mode preference
-        val isDarkMode = AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES
+        // Load dark mode preference - check actual current night mode
+        val currentNightMode = resources.configuration.uiMode and android.content.res.Configuration.UI_MODE_NIGHT_MASK
+        val isDarkMode = currentNightMode == android.content.res.Configuration.UI_MODE_NIGHT_YES
         switchDarkMode.isChecked = isDarkMode
     }
 
@@ -149,7 +159,7 @@ class ProfileFragment : Fragment() {
         }
 
         // Avatar click to change photo
-        tvAvatarInitials.setOnClickListener {
+        cardAvatar.setOnClickListener {
             showPhotoOptionsDialog()
         }
 
@@ -323,10 +333,67 @@ class ProfileFragment : Fragment() {
                     .joinToString("")
                 tvAvatarInitials.text = initials.ifEmpty { "U" }
 
+                // Load profile photo if available
+                currentUser.profilePhotoUri?.let { uriString ->
+                    try {
+                        val uri = Uri.parse(uriString)
+                        ivProfilePhoto.setImageURI(uri)
+                        ivProfilePhoto.visibility = View.VISIBLE
+                        tvAvatarInitials.visibility = View.GONE
+                    } catch (e: Exception) {
+                        // If loading fails, show initials
+                        ivProfilePhoto.visibility = View.GONE
+                        tvAvatarInitials.visibility = View.VISIBLE
+                    }
+                } ?: run {
+                    ivProfilePhoto.visibility = View.GONE
+                    tvAvatarInitials.visibility = View.VISIBLE
+                }
+
                 // Format member since date
                 val dateFormat = SimpleDateFormat("MMMM yyyy", Locale.getDefault())
                 tvMemberSince.text = "Member since ${dateFormat.format(currentUser.createdAt)}"
             }
+        }
+    }
+
+    private fun saveAndDisplayProfilePhoto(uri: Uri) {
+        // Display the photo immediately
+        ivProfilePhoto.setImageURI(uri)
+        ivProfilePhoto.visibility = View.VISIBLE
+        tvAvatarInitials.visibility = View.GONE
+
+        // Save to database
+        val userId = sessionManager.getCurrentUserId()
+        if (userId == -1L) return
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            val user = userRepository.getUserById(userId)
+            user?.let { currentUser ->
+                val updatedUser = currentUser.copy(profilePhotoUri = uri.toString())
+                userRepository.updateUser(updatedUser)
+                Toast.makeText(requireContext(), getString(R.string.profile_photo_updated), Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    private fun copyImageToInternalStorage(sourceUri: Uri): Uri? {
+        return try {
+            val inputStream = requireContext().contentResolver.openInputStream(sourceUri)
+            val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
+            val file = File(requireContext().filesDir, "profile_$timeStamp.jpg")
+            val outputStream = FileOutputStream(file)
+            
+            inputStream?.use { input ->
+                outputStream.use { output ->
+                    input.copyTo(output)
+                }
+            }
+            
+            Uri.fromFile(file)
+        } catch (e: Exception) {
+            Toast.makeText(requireContext(), "Failed to save image: ${e.message}", Toast.LENGTH_SHORT).show()
+            null
         }
     }
 

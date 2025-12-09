@@ -25,7 +25,9 @@ data class Exercise(
     val sets: Int = 3,
     val reps: Int = 10,
     val instructions: String = "",
-    val imageEmoji: String = "💪", // Using emoji as placeholder for images
+    val imageEmoji: String = "💪", // Emoji fallback for display
+    val imageResourceName: String? = null, // Drawable resource name for exercise image
+    val imageUri: String? = null, // URI for user-captured images
     val isCompleted: Boolean = false,
     val orderIndex: Int = 0
 )

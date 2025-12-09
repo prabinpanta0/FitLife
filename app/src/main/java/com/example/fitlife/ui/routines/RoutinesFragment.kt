@@ -103,15 +103,19 @@ class RoutinesFragment : Fragment() {
 
         if (userId == -1L) return
 
-        lifecycleScope.launch {
+        viewLifecycleOwner.lifecycleScope.launch {
             app.workoutRepository.getRoutinesWithExercises(userId).collect { routines ->
-                allRoutines = routines
-                filterRoutines()
+                if (_binding != null) {
+                    allRoutines = routines
+                    filterRoutines()
+                }
             }
         }
     }
 
     private fun filterRoutines() {
+        if (_binding == null) return
+        
         val filteredRoutines = when (selectedDayFilter) {
             -2 -> allRoutines // All
             else -> allRoutines.filter { it.routine.dayOfWeek == selectedDayFilter }
@@ -151,15 +155,17 @@ class RoutinesFragment : Fragment() {
 
     private fun deleteRoutine(routine: RoutineWithExercises) {
         val app = requireActivity().application as FitLifeApplication
-        lifecycleScope.launch {
+        viewLifecycleOwner.lifecycleScope.launch {
             app.workoutRepository.deleteRoutine(routine.routine)
-            Toast.makeText(context, R.string.routine_deleted, Toast.LENGTH_SHORT).show()
+            if (_binding != null) {
+                Toast.makeText(context, R.string.routine_deleted, Toast.LENGTH_SHORT).show()
+            }
         }
     }
 
     private fun toggleRoutineCompletion(routine: RoutineWithExercises) {
         val app = requireActivity().application as FitLifeApplication
-        lifecycleScope.launch {
+        viewLifecycleOwner.lifecycleScope.launch {
             app.workoutRepository.updateRoutineCompletionStatus(
                 routine.routine.id,
                 !routine.routine.isCompleted

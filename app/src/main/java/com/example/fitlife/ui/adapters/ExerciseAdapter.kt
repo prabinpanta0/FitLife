@@ -1,5 +1,6 @@
 package com.example.fitlife.ui.adapters
 
+import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -37,7 +38,43 @@ class ExerciseAdapter(
             binding.apply {
                 tvExerciseName.text = exercise.name
                 tvSetsReps.text = root.context.getString(R.string.sets_reps_format, exercise.sets, exercise.reps)
-                tvExerciseEmoji.text = exercise.imageEmoji
+                
+                // Display image or emoji
+                when {
+                    exercise.imageUri != null -> {
+                        try {
+                            ivExerciseImage.setImageURI(Uri.parse(exercise.imageUri))
+                            ivExerciseImage.visibility = View.VISIBLE
+                            tvExerciseEmoji.visibility = View.GONE
+                        } catch (e: Exception) {
+                            // Fallback to emoji
+                            ivExerciseImage.visibility = View.GONE
+                            tvExerciseEmoji.visibility = View.VISIBLE
+                            tvExerciseEmoji.text = exercise.imageEmoji
+                        }
+                    }
+                    exercise.imageResourceName != null -> {
+                        val resId = root.context.resources.getIdentifier(
+                            exercise.imageResourceName, 
+                            "drawable", 
+                            root.context.packageName
+                        )
+                        if (resId != 0) {
+                            ivExerciseImage.setImageResource(resId)
+                            ivExerciseImage.visibility = View.VISIBLE
+                            tvExerciseEmoji.visibility = View.GONE
+                        } else {
+                            ivExerciseImage.visibility = View.GONE
+                            tvExerciseEmoji.visibility = View.VISIBLE
+                            tvExerciseEmoji.text = exercise.imageEmoji
+                        }
+                    }
+                    else -> {
+                        ivExerciseImage.visibility = View.GONE
+                        tvExerciseEmoji.visibility = View.VISIBLE
+                        tvExerciseEmoji.text = exercise.imageEmoji
+                    }
+                }
 
                 // Instructions
                 if (exercise.instructions.isNotEmpty()) {

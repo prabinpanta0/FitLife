@@ -41,13 +41,6 @@ class LoginFragment : Fragment() {
         sessionManager = SessionManager(requireContext())
         firebaseAuth = Firebase.auth
 
-        // Check if already logged in (Firebase + local session)
-        val currentUser = firebaseAuth.currentUser
-        if (currentUser != null && sessionManager.isLoggedIn()) {
-            navigateToHome()
-            return
-        }
-
         setupClickListeners()
     }
 

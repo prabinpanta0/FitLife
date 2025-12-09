@@ -3,9 +3,11 @@ package com.example.fitlife.ui.checklist
 import android.Manifest
 import android.content.Context
 import android.content.Intent
+import android.database.Cursor
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.provider.ContactsContract
 import android.telephony.SmsManager
 import android.view.LayoutInflater
 import android.view.View
@@ -16,6 +18,7 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fitlife.FitLifeApplication
@@ -47,6 +50,9 @@ class ChecklistFragment : Fragment() {
 
     private lateinit var checklistAdapter: ChecklistCategoryAdapter
     private lateinit var sessionManager: SessionManager
+    
+    // Current phone number edit text reference for contact picker
+    private var currentPhoneEditText: TextInputEditText? = null
 
     private val workoutRepository by lazy {
         (requireActivity().application as FitLifeApplication).workoutRepository
@@ -72,10 +78,17 @@ class ChecklistFragment : Fragment() {
     ) { permissions ->
         val contactsGranted = permissions[Manifest.permission.READ_CONTACTS] == true
         if (contactsGranted) {
-            // Would open contact picker here
-            Toast.makeText(requireContext(), getString(R.string.contacts_permission_granted), Toast.LENGTH_SHORT).show()
+            launchContactPicker()
         } else {
             handleContactsPermissionDenied()
+        }
+    }
+
+    private val pickContact = registerForActivityResult(
+        ActivityResultContracts.PickContact()
+    ) { uri ->
+        uri?.let { contactUri ->
+            getPhoneNumberFromContact(contactUri)
         }
     }
 
@@ -150,8 +163,8 @@ class ChecklistFragment : Fragment() {
         }
 
         btnGoToRoutines.setOnClickListener {
-            // Navigate to routines - in a real app would use Navigation component
-            Toast.makeText(requireContext(), getString(R.string.navigate_to_routines), Toast.LENGTH_SHORT).show()
+            // Navigate to routines using Navigation component
+            findNavController().navigate(R.id.action_checklist_to_routines)
         }
     }
 
@@ -284,14 +297,100 @@ class ChecklistFragment : Fragment() {
         }
     }
 
+    private fun launchContactPicker() {
+        pickContact.launch(null)
+    }
+
+    private fun checkContactsPermissionAndPick(phoneEditText: TextInputEditText) {
+        currentPhoneEditText = phoneEditText
+        when {
+            PermissionManager.hasPermissions(requireContext(), PermissionManager.CONTACTS_PERMISSION) -> {
+                launchContactPicker()
+            }
+            PermissionManager.shouldShowRationale(requireActivity(), PermissionManager.CONTACTS_PERMISSION) -> {
+                PermissionManager.showRationaleDialog(
+                    context = requireContext(),
+                    title = PermissionManager.getRationaleTitle(PermissionManager.PermissionType.CONTACTS),
+                    message = PermissionManager.getRationaleMessage(PermissionManager.PermissionType.CONTACTS),
+                    onPositiveClick = {
+                        requestContactsPermission.launch(PermissionManager.CONTACTS_PERMISSION)
+                    }
+                )
+            }
+            else -> {
+                requestContactsPermission.launch(PermissionManager.CONTACTS_PERMISSION)
+            }
+        }
+    }
+
+    private fun getPhoneNumberFromContact(contactUri: Uri) {
+        var phoneNumber: String? = null
+        var contactName: String? = null
+        
+        val cursor: Cursor? = requireContext().contentResolver.query(
+            contactUri, null, null, null, null
+        )
+        
+        cursor?.use {
+            if (it.moveToFirst()) {
+                val idIndex = it.getColumnIndex(ContactsContract.Contacts._ID)
+                val nameIndex = it.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME)
+                val hasPhoneIndex = it.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER)
+                
+                if (idIndex >= 0) {
+                    val contactId = it.getString(idIndex)
+                    if (nameIndex >= 0) {
+                        contactName = it.getString(nameIndex)
+                    }
+                    
+                    if (hasPhoneIndex >= 0 && it.getInt(hasPhoneIndex) > 0) {
+                        val phoneCursor = requireContext().contentResolver.query(
+                            ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+                            null,
+                            "${ContactsContract.CommonDataKinds.Phone.CONTACT_ID} = ?",
+                            arrayOf(contactId),
+                            null
+                        )
+                        
+                        phoneCursor?.use { pc ->
+                            if (pc.moveToFirst()) {
+                                val numberIndex = pc.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)
+                                if (numberIndex >= 0) {
+                                    phoneNumber = pc.getString(numberIndex)
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        
+        if (phoneNumber != null) {
+            currentPhoneEditText?.setText(phoneNumber)
+            Toast.makeText(
+                requireContext(), 
+                getString(R.string.contact_selected, contactName ?: "Contact"),
+                Toast.LENGTH_SHORT
+            ).show()
+        } else {
+            Toast.makeText(requireContext(), getString(R.string.no_phone_for_contact), Toast.LENGTH_SHORT).show()
+        }
+    }
+
     private fun showSmsDialog() {
         val dialogView = LayoutInflater.from(requireContext())
             .inflate(R.layout.dialog_send_sms, null)
 
         val tilPhoneNumber = dialogView.findViewById<TextInputLayout>(R.id.tilPhoneNumber)
         val etPhoneNumber = dialogView.findViewById<TextInputEditText>(R.id.etPhoneNumber)
+        val btnPickContact = dialogView.findViewById<MaterialButton>(R.id.btnPickContact)
         val tilMessage = dialogView.findViewById<TextInputLayout>(R.id.tilMessage)
         val etMessage = dialogView.findViewById<TextInputEditText>(R.id.etMessage)
+
+        // Setup contact picker button
+        btnPickContact.setOnClickListener {
+            checkContactsPermissionAndPick(etPhoneNumber)
+        }
 
         // Pre-fill message with checklist
         val checklistText = generateChecklistText()

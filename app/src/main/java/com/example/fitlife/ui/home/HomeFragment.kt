@@ -43,7 +43,7 @@ class HomeFragment : Fragment() {
 
         // Check authentication
         if (!sessionManager.isLoggedIn()) {
-            findNavController().navigate(R.id.LoginFragment)
+            findNavController().navigate(R.id.action_home_to_login)
             return
         }
 
@@ -114,23 +114,27 @@ class HomeFragment : Fragment() {
 
         if (userId == -1L) return
 
-        lifecycleScope.launch {
+        viewLifecycleOwner.lifecycleScope.launch {
             // Observe routines
             app.workoutRepository.getRoutinesWithExercises(userId).collect { routines ->
-                updateUpcomingRoutines(routines)
-                updateTodayWorkout(routines)
+                if (_binding != null) {
+                    updateUpcomingRoutines(routines)
+                    updateTodayWorkout(routines)
+                }
             }
         }
 
         // Observe progress
-        lifecycleScope.launch {
+        viewLifecycleOwner.lifecycleScope.launch {
             combine(
                 app.workoutRepository.getCompletedRoutineCount(userId),
                 app.workoutRepository.getTotalScheduledRoutineCount(userId)
             ) { completed, total ->
                 Pair(completed, total)
             }.collect { (completed, total) ->
-                updateProgress(completed, total)
+                if (_binding != null) {
+                    updateProgress(completed, total)
+                }
             }
         }
     }
