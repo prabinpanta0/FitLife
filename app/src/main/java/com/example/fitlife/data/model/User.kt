@@ -10,5 +10,6 @@ data class User(
     val email: String,
     val password: String, // In production, this should be hashed
     val name: String,
+    val profilePhotoUri: String? = null, // URI for user's profile photo
     val createdAt: Long = System.currentTimeMillis()
 )

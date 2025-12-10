@@ -1,5 +1,6 @@
 package com.example.fitlife.ui.adapters
 
+import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -37,7 +38,38 @@ class ExerciseAdapter(
             binding.apply {
                 tvExerciseName.text = exercise.name
                 tvSetsReps.text = root.context.getString(R.string.sets_reps_format, exercise.sets, exercise.reps)
-                tvExerciseEmoji.text = exercise.imageEmoji
+                
+                // Display image or emoji
+                when {
+                    // User-captured/selected image
+                    !exercise.imageUri.isNullOrEmpty() -> {
+                        try {
+                            ivExerciseImage.setImageURI(Uri.parse(exercise.imageUri))
+                            cardExerciseImage.visibility = View.VISIBLE
+                            tvExerciseEmoji.visibility = View.GONE
+                        } catch (e: Exception) {
+                            // Fallback to emoji
+                            showEmoji(exercise.imageEmoji)
+                        }
+                    }
+                    // Preset drawable image
+                    !exercise.imageResourceName.isNullOrEmpty() -> {
+                        val resId = root.context.resources.getIdentifier(
+                            exercise.imageResourceName, "drawable", root.context.packageName
+                        )
+                        if (resId != 0) {
+                            ivExerciseImage.setImageResource(resId)
+                            cardExerciseImage.visibility = View.VISIBLE
+                            tvExerciseEmoji.visibility = View.GONE
+                        } else {
+                            showEmoji(exercise.imageEmoji)
+                        }
+                    }
+                    // Fallback to emoji
+                    else -> {
+                        showEmoji(exercise.imageEmoji)
+                    }
+                }
 
                 // Instructions
                 if (exercise.instructions.isNotEmpty()) {
@@ -64,6 +96,12 @@ class ExerciseAdapter(
                     onCompletionToggle(exercise, isChecked)
                 }
             }
+        }
+        
+        private fun showEmoji(emoji: String) {
+            binding.tvExerciseEmoji.text = emoji
+            binding.tvExerciseEmoji.visibility = View.VISIBLE
+            binding.cardExerciseImage.visibility = View.GONE
         }
     }
 

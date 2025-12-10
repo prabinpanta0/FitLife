@@ -14,13 +14,13 @@
         android:padding="24dp">
 
         <!-- Logo/App Icon -->
-        <TextView
+        <ImageView
             android:id="@+id/tvAppIcon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/emoji_workout"
-            android:textSize="80sp"
             android:layout_marginTop="48dp"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:contentDescription="@string/app_name"
+            android:src="@drawable/a478546"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />

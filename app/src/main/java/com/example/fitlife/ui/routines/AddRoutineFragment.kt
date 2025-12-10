@@ -1,12 +1,17 @@
 package com.example.fitlife.ui.routines
 
+import android.Manifest
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -17,10 +22,16 @@ import com.example.fitlife.data.model.*
 import com.example.fitlife.databinding.FragmentAddRoutineBinding
 import com.example.fitlife.databinding.DialogAddExerciseBinding
 import com.example.fitlife.ui.adapters.ExerciseAdapter
+import com.example.fitlife.utils.PermissionManager
 import com.example.fitlife.utils.SessionManager
 import com.google.android.material.chip.Chip
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.launch
+import java.io.File
+import java.io.FileOutputStream
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 class AddRoutineFragment : Fragment() {
 
@@ -36,6 +47,120 @@ class AddRoutineFragment : Fragment() {
     private var exercises = mutableListOf<Exercise>()
     private var exerciseEquipment = mutableMapOf<Int, MutableList<String>>() // temp index -> equipment names
     private var locations = listOf<GeoLocation>()
+    
+    // Exercise image handling
+    private var currentExercisePhotoUri: Uri? = null
+    private var currentDialogBinding: DialogAddExerciseBinding? = null
+    private var pendingImageResourceName: String? = null
+    private var pendingImageUri: String? = null
+    
+    // Camera permission
+    private val requestCameraPermission = registerForActivityResult(
+        ActivityResultContracts.RequestMultiplePermissions()
+    ) { permissions ->
+        val cameraGranted = permissions[Manifest.permission.CAMERA] == true
+        if (cameraGranted) {
+            launchExerciseCamera()
+        } else {
+            Toast.makeText(requireContext(), getString(R.string.camera_permission_required), Toast.LENGTH_SHORT).show()
+        }
+    }
+    
+    // Take picture for exercise
+    private val takePicture = registerForActivityResult(
+        ActivityResultContracts.TakePicture()
+    ) { success ->
+        if (success) {
+            currentExercisePhotoUri?.let { uri ->
+                pendingImageUri = uri.toString()
+                pendingImageResourceName = null
+                currentDialogBinding?.let { binding ->
+                    binding.ivExerciseImage.setImageURI(uri)
+                    binding.ivExerciseImage.visibility = View.VISIBLE
+                    binding.llImagePlaceholder.visibility = View.GONE
+                }
+                Toast.makeText(requireContext(), getString(R.string.photo_captured), Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+    
+    // Pick image from gallery
+    private val pickImage = registerForActivityResult(
+        ActivityResultContracts.GetContent()
+    ) { uri ->
+        uri?.let {
+            val savedUri = copyImageToInternalStorage(it)
+            if (savedUri != null) {
+                pendingImageUri = savedUri.toString()
+                pendingImageResourceName = null
+                currentDialogBinding?.let { binding ->
+                    binding.ivExerciseImage.setImageURI(savedUri)
+                    binding.ivExerciseImage.visibility = View.VISIBLE
+                    binding.llImagePlaceholder.visibility = View.GONE
+                }
+                Toast.makeText(requireContext(), getString(R.string.photo_selected), Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+    
+    private fun checkCameraPermissionAndCapture() {
+        when {
+            PermissionManager.hasPermissions(requireContext(), PermissionManager.CAMERA_PERMISSION) -> {
+                launchExerciseCamera()
+            }
+            PermissionManager.shouldShowRationale(requireActivity(), PermissionManager.CAMERA_PERMISSION) -> {
+                PermissionManager.showRationaleDialog(
+                    context = requireContext(),
+                    title = PermissionManager.getRationaleTitle(PermissionManager.PermissionType.CAMERA),
+                    message = PermissionManager.getRationaleMessage(PermissionManager.PermissionType.CAMERA),
+                    onPositiveClick = {
+                        requestCameraPermission.launch(PermissionManager.CAMERA_PERMISSION)
+                    }
+                )
+            }
+            else -> {
+                requestCameraPermission.launch(PermissionManager.CAMERA_PERMISSION)
+            }
+        }
+    }
+    
+    private fun launchExerciseCamera() {
+        try {
+            val photoFile = createImageFile()
+            currentExercisePhotoUri = FileProvider.getUriForFile(
+                requireContext(),
+                "${requireContext().packageName}.fileprovider",
+                photoFile
+            )
+            currentExercisePhotoUri?.let { takePicture.launch(it) }
+        } catch (e: Exception) {
+            Toast.makeText(requireContext(), getString(R.string.camera_launch_failed, e.message), Toast.LENGTH_SHORT).show()
+        }
+    }
+    
+    private fun createImageFile(): File {
+        val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
+        val storageDir = requireContext().cacheDir
+        return File.createTempFile("EXERCISE_${timeStamp}_", ".jpg", storageDir)
+    }
+    
+    private fun copyImageToInternalStorage(sourceUri: Uri): Uri? {
+        return try {
+            val inputStream = requireContext().contentResolver.openInputStream(sourceUri)
+            val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
+            val file = File(requireContext().filesDir, "exercise_photo_$timeStamp.jpg")
+            
+            inputStream?.use { input ->
+                FileOutputStream(file).use { output ->
+                    input.copyTo(output)
+                }
+            }
+            
+            Uri.fromFile(file)
+        } catch (e: Exception) {
+            null
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -186,8 +311,45 @@ class AddRoutineFragment : Fragment() {
 
     private fun showAddExerciseDialog() {
         val dialogBinding = DialogAddExerciseBinding.inflate(layoutInflater)
+        currentDialogBinding = dialogBinding
         var selectedEmoji = "💪"
         val equipmentList = mutableListOf<String>()
+        
+        // Reset image state
+        pendingImageUri = null
+        pendingImageResourceName = null
+        
+        // Setup image capture buttons
+        dialogBinding.btnTakePhoto.setOnClickListener {
+            checkCameraPermissionAndCapture()
+        }
+        
+        dialogBinding.btnPickImage.setOnClickListener {
+            pickImage.launch("image/*")
+        }
+        
+        // Setup preset image selection
+        dialogBinding.cardPreset1.setOnClickListener {
+            pendingImageResourceName = "a0696890"
+            pendingImageUri = null
+            dialogBinding.ivExerciseImage.setImageResource(R.drawable.a0696890)
+            dialogBinding.ivExerciseImage.visibility = View.VISIBLE
+            dialogBinding.llImagePlaceholder.visibility = View.GONE
+            // Highlight selected preset
+            dialogBinding.cardPreset1.strokeColor = requireContext().getColor(R.color.primary)
+            dialogBinding.cardPreset2.strokeColor = android.graphics.Color.TRANSPARENT
+        }
+        
+        dialogBinding.cardPreset2.setOnClickListener {
+            pendingImageResourceName = "a478546"
+            pendingImageUri = null
+            dialogBinding.ivExerciseImage.setImageResource(R.drawable.a478546)
+            dialogBinding.ivExerciseImage.visibility = View.VISIBLE
+            dialogBinding.llImagePlaceholder.visibility = View.GONE
+            // Highlight selected preset
+            dialogBinding.cardPreset2.strokeColor = requireContext().getColor(R.color.primary)
+            dialogBinding.cardPreset1.strokeColor = android.graphics.Color.TRANSPARENT
+        }
 
         // Setup emoji selection
         val emojiViews = listOf(
@@ -233,6 +395,8 @@ class AddRoutineFragment : Fragment() {
                         reps = reps,
                         instructions = instructions,
                         imageEmoji = selectedEmoji,
+                        imageResourceName = pendingImageResourceName,
+                        imageUri = pendingImageUri,
                         orderIndex = exercises.size
                     )
                     exercises.add(exercise)
@@ -240,19 +404,86 @@ class AddRoutineFragment : Fragment() {
                     updateExercisesList()
                 }
             }
+            .setOnDismissListener {
+                currentDialogBinding = null
+            }
             .show()
     }
 
     private fun showEditExerciseDialog(exercise: Exercise) {
         val dialogBinding = DialogAddExerciseBinding.inflate(layoutInflater)
+        currentDialogBinding = dialogBinding
         var selectedEmoji = exercise.imageEmoji
         val equipmentList = mutableListOf<String>()
+        
+        // Initialize image state from existing exercise
+        pendingImageUri = exercise.imageUri
+        pendingImageResourceName = exercise.imageResourceName
 
         // Pre-fill data
         dialogBinding.etExerciseName.setText(exercise.name)
         dialogBinding.etSets.setText(exercise.sets.toString())
         dialogBinding.etReps.setText(exercise.reps.toString())
         dialogBinding.etInstructions.setText(exercise.instructions)
+        
+        // Load existing image if present
+        when {
+            !exercise.imageUri.isNullOrEmpty() -> {
+                try {
+                    dialogBinding.ivExerciseImage.setImageURI(Uri.parse(exercise.imageUri))
+                    dialogBinding.ivExerciseImage.visibility = View.VISIBLE
+                    dialogBinding.llImagePlaceholder.visibility = View.GONE
+                } catch (e: Exception) {
+                    // Fallback - keep placeholder visible
+                }
+            }
+            !exercise.imageResourceName.isNullOrEmpty() -> {
+                val resId = requireContext().resources.getIdentifier(
+                    exercise.imageResourceName, "drawable", requireContext().packageName
+                )
+                if (resId != 0) {
+                    dialogBinding.ivExerciseImage.setImageResource(resId)
+                    dialogBinding.ivExerciseImage.visibility = View.VISIBLE
+                    dialogBinding.llImagePlaceholder.visibility = View.GONE
+                    // Highlight the preset
+                    if (exercise.imageResourceName == "a0696890") {
+                        dialogBinding.cardPreset1.strokeColor = requireContext().getColor(R.color.primary)
+                    } else if (exercise.imageResourceName == "a478546") {
+                        dialogBinding.cardPreset2.strokeColor = requireContext().getColor(R.color.primary)
+                    }
+                }
+            }
+        }
+        
+        // Setup image capture buttons
+        dialogBinding.btnTakePhoto.setOnClickListener {
+            checkCameraPermissionAndCapture()
+        }
+        
+        dialogBinding.btnPickImage.setOnClickListener {
+            pickImage.launch("image/*")
+        }
+        
+        // Setup preset image selection
+        dialogBinding.cardPreset1.setOnClickListener {
+            pendingImageResourceName = "a0696890"
+            pendingImageUri = null
+            dialogBinding.ivExerciseImage.setImageResource(R.drawable.a0696890)
+            dialogBinding.ivExerciseImage.visibility = View.VISIBLE
+            dialogBinding.llImagePlaceholder.visibility = View.GONE
+            dialogBinding.cardPreset1.strokeColor = requireContext().getColor(R.color.primary)
+            dialogBinding.cardPreset2.strokeColor = android.graphics.Color.TRANSPARENT
+        }
+        
+        dialogBinding.cardPreset2.setOnClickListener {
+            pendingImageResourceName = "a478546"
+            pendingImageUri = null
+            dialogBinding.ivExerciseImage.setImageResource(R.drawable.a478546)
+            dialogBinding.ivExerciseImage.visibility = View.VISIBLE
+            dialogBinding.llImagePlaceholder.visibility = View.GONE
+            dialogBinding.cardPreset2.strokeColor = requireContext().getColor(R.color.primary)
+            dialogBinding.cardPreset1.strokeColor = android.graphics.Color.TRANSPARENT
+        }
 
         // Setup emoji selection
         val emojiViews = listOf(
@@ -302,12 +533,17 @@ class AddRoutineFragment : Fragment() {
                             sets = sets,
                             reps = reps,
                             instructions = instructions,
-                            imageEmoji = selectedEmoji
+                            imageEmoji = selectedEmoji,
+                            imageResourceName = pendingImageResourceName,
+                            imageUri = pendingImageUri
                         )
                         exerciseEquipment[index] = equipmentList
                         updateExercisesList()
                     }
                 }
+            }
+            .setOnDismissListener {
+                currentDialogBinding = null
             }
             .show()
     }

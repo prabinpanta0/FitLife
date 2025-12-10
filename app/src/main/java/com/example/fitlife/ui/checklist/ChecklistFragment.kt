@@ -6,6 +6,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.provider.ContactsContract
 import android.telephony.SmsManager
 import android.view.LayoutInflater
 import android.view.View
@@ -55,6 +56,9 @@ class ChecklistFragment : Fragment() {
     // Track checked items locally (in a real app, this could be persisted)
     private val checkedItems = mutableSetOf<Long>()
     private var allEquipment: List<Equipment> = emptyList()
+    
+    // Reference to phone input for contact picker callback
+    private var currentPhoneInput: TextInputEditText? = null
 
     private val requestSmsPermission = registerForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
@@ -72,10 +76,81 @@ class ChecklistFragment : Fragment() {
     ) { permissions ->
         val contactsGranted = permissions[Manifest.permission.READ_CONTACTS] == true
         if (contactsGranted) {
-            // Would open contact picker here
-            Toast.makeText(requireContext(), getString(R.string.contacts_permission_granted), Toast.LENGTH_SHORT).show()
+            pickContact.launch(null)
         } else {
             handleContactsPermissionDenied()
+        }
+    }
+    
+    private val pickContact = registerForActivityResult(
+        ActivityResultContracts.PickContact()
+    ) { contactUri ->
+        contactUri?.let { uri ->
+            val phoneNumber = getPhoneNumberFromContact(uri)
+            if (phoneNumber != null) {
+                currentPhoneInput?.setText(phoneNumber)
+                Toast.makeText(requireContext(), getString(R.string.contact_selected, phoneNumber), Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(requireContext(), getString(R.string.no_phone_for_contact), Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+    
+    private fun getPhoneNumberFromContact(contactUri: Uri): String? {
+        var phoneNumber: String? = null
+        
+        // Get contact ID from URI
+        val cursor = requireContext().contentResolver.query(
+            contactUri,
+            arrayOf(ContactsContract.Contacts._ID, ContactsContract.Contacts.HAS_PHONE_NUMBER),
+            null, null, null
+        )
+        
+        cursor?.use {
+            if (it.moveToFirst()) {
+                val contactId = it.getString(it.getColumnIndexOrThrow(ContactsContract.Contacts._ID))
+                val hasPhone = it.getInt(it.getColumnIndexOrThrow(ContactsContract.Contacts.HAS_PHONE_NUMBER))
+                
+                if (hasPhone > 0) {
+                    // Query phone numbers
+                    val phoneCursor = requireContext().contentResolver.query(
+                        ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+                        arrayOf(ContactsContract.CommonDataKinds.Phone.NUMBER),
+                        "${ContactsContract.CommonDataKinds.Phone.CONTACT_ID} = ?",
+                        arrayOf(contactId),
+                        null
+                    )
+                    
+                    phoneCursor?.use { pc ->
+                        if (pc.moveToFirst()) {
+                            phoneNumber = pc.getString(pc.getColumnIndexOrThrow(ContactsContract.CommonDataKinds.Phone.NUMBER))
+                        }
+                    }
+                }
+            }
+        }
+        
+        return phoneNumber
+    }
+    
+    private fun checkContactsPermissionAndPick() {
+        when {
+            PermissionManager.hasPermissions(requireContext(), PermissionManager.CONTACTS_PERMISSION) -> {
+                pickContact.launch(null)
+            }
+            PermissionManager.shouldShowRationale(requireActivity(), PermissionManager.CONTACTS_PERMISSION) -> {
+                PermissionManager.showRationaleDialog(
+                    context = requireContext(),
+                    title = PermissionManager.getRationaleTitle(PermissionManager.PermissionType.CONTACTS),
+                    message = PermissionManager.getRationaleMessage(PermissionManager.PermissionType.CONTACTS),
+                    onPositiveClick = {
+                        requestContactsPermission.launch(PermissionManager.CONTACTS_PERMISSION)
+                    }
+                )
+            }
+            else -> {
+                requestContactsPermission.launch(PermissionManager.CONTACTS_PERMISSION)
+            }
         }
     }
 
@@ -290,12 +365,21 @@ class ChecklistFragment : Fragment() {
 
         val tilPhoneNumber = dialogView.findViewById<TextInputLayout>(R.id.tilPhoneNumber)
         val etPhoneNumber = dialogView.findViewById<TextInputEditText>(R.id.etPhoneNumber)
+        val btnPickContact = dialogView.findViewById<MaterialButton>(R.id.btnPickContact)
         val tilMessage = dialogView.findViewById<TextInputLayout>(R.id.tilMessage)
         val etMessage = dialogView.findViewById<TextInputEditText>(R.id.etMessage)
+
+        // Save reference for contact picker callback
+        currentPhoneInput = etPhoneNumber
 
         // Pre-fill message with checklist
         val checklistText = generateChecklistText()
         etMessage.setText(checklistText)
+        
+        // Setup contact picker button
+        btnPickContact.setOnClickListener {
+            checkContactsPermissionAndPick()
+        }
 
         MaterialAlertDialogBuilder(requireContext())
             .setTitle(R.string.send_via_sms)
@@ -311,6 +395,9 @@ class ChecklistFragment : Fragment() {
                 }
 
                 sendSms(phoneNumber, message)
+            }
+            .setOnDismissListener {
+                currentPhoneInput = null
             }
             .show()
     }

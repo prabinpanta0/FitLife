@@ -15,7 +15,7 @@ import com.example.fitlife.data.model.*
         Equipment::class,
         GeoLocation::class
     ],
-    version = 1,
+    version = 2,
     exportSchema = false
 )
 abstract class FitLifeDatabase : RoomDatabase() {
