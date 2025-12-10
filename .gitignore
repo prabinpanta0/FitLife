@@ -2,6 +2,7 @@
 .gradle
 /local.properties
 /.idea/
+/.log/
 /.kotlin/
 /.idea/caches
 /.idea/libraries
