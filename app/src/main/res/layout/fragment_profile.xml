@@ -104,9 +104,9 @@
 
                         <ImageView android:layout_width="24dp" android:layout_height="24dp" android:src="@drawable/ic_notification" android:contentDescription="@null" android:importantForAccessibility="no" app:tint="?attr/colorOnSurfaceVariant" />
 
-                        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:layout_marginStart="16dp" android:text="@string/notifications" android:textSize="16sp" android:textColor="?attr/colorOnSurface" />
+                        <TextView android:id="@+id/tvNotificationsLabel" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:layout_marginStart="16dp" android:text="@string/notifications" android:textSize="16sp" android:textColor="?attr/colorOnSurface" />
 
-                        <com.google.android.material.switchmaterial.SwitchMaterial android:id="@+id/switchNotifications" android:layout_width="wrap_content" android:layout_height="wrap_content" android:checked="true" />
+                        <com.google.android.material.switchmaterial.SwitchMaterial android:id="@+id/switchNotifications" android:layout_width="wrap_content" android:layout_height="wrap_content" android:checked="true" android:contentDescription="@string/toggle_notifications" android:labelFor="@id/tvNotificationsLabel" />
 
                     </LinearLayout>
 
@@ -117,9 +117,9 @@
 
                         <ImageView android:layout_width="24dp" android:layout_height="24dp" android:src="@drawable/ic_dark_mode" android:contentDescription="@null" android:importantForAccessibility="no" app:tint="?attr/colorOnSurfaceVariant" />
 
-                        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:layout_marginStart="16dp" android:text="@string/dark_mode" android:textSize="16sp" android:textColor="?attr/colorOnSurface" />
+                        <TextView android:id="@+id/tvDarkModeLabel" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:layout_marginStart="16dp" android:text="@string/dark_mode" android:textSize="16sp" android:textColor="?attr/colorOnSurface" />
 
-                        <com.google.android.material.switchmaterial.SwitchMaterial android:id="@+id/switchDarkMode" android:layout_width="wrap_content" android:layout_height="wrap_content" />
+                        <com.google.android.material.switchmaterial.SwitchMaterial android:id="@+id/switchDarkMode" android:layout_width="wrap_content" android:layout_height="wrap_content" android:contentDescription="@string/toggle_dark_mode" android:labelFor="@id/tvDarkModeLabel" />
 
                     </LinearLayout>
 

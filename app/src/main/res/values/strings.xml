@@ -295,7 +295,7 @@
 
     <!-- About dialog -->
     <string name="about_title">About FitLife</string>
-    <string name="about_message">FitLife v1.0.0\n\nYour personal fitness companion for:\n• Workout routine management\n• Equipment tracking\n• Gym location mapping\n\n Idleshade@Quanta \n\n All right belongs to prabinpanta0</string>
+    <string name="about_message">FitLife v1.0.0\n\nYour personal fitness companion for:\n• Workout routine management\n• Equipment tracking\n• Gym location mapping\n\n Idleshade@Quanta \n\n All rights belong to prabinpanta0</string>
 
     <!-- Plurals -->
     <plurals name="items_count">
@@ -325,4 +325,11 @@
     <!-- Profile photo strings -->
     <string name="profile_photo_updated">Profile photo updated!</string>
     <string name="profile_photo">Profile photo</string>
+    <string name="error_saving_photo">Error saving photo. Please try again.</string>
+    <string name="error_user_not_found">User not found. Please log in again.</string>
+    <string name="error_not_logged_in">Not logged in. Please log in first.</string>
+
+    <!-- Accessibility strings -->
+    <string name="toggle_notifications">Toggle notifications on or off</string>
+    <string name="toggle_dark_mode">Toggle dark mode on or off</string>
 </resources>

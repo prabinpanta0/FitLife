@@ -44,13 +44,13 @@
 
                 <com.google.android.material.card.MaterialCardView android:id="@+id/cardPreset1" android:layout_width="64dp" android:layout_height="64dp" android:layout_marginEnd="8dp" app:cardCornerRadius="8dp" app:strokeWidth="2dp" app:strokeColor="@android:color/transparent">
 
-                    <ImageView android:layout_width="match_parent" android:layout_height="match_parent" android:scaleType="centerCrop" android:src="@drawable/a0696890" android:contentDescription="@string/preset_image" />
+                    <ImageView android:layout_width="match_parent" android:layout_height="match_parent" android:scaleType="centerCrop" android:src="@drawable/ic_exercise_preset_workout" android:contentDescription="@string/preset_image" />
 
                 </com.google.android.material.card.MaterialCardView>
 
                 <com.google.android.material.card.MaterialCardView android:id="@+id/cardPreset2" android:layout_width="64dp" android:layout_height="64dp" android:layout_marginEnd="8dp" app:cardCornerRadius="8dp" app:strokeWidth="2dp" app:strokeColor="@android:color/transparent">
 
-                    <ImageView android:layout_width="match_parent" android:layout_height="match_parent" android:scaleType="centerCrop" android:src="@drawable/a478546" android:contentDescription="@string/preset_image" />
+                    <ImageView android:layout_width="match_parent" android:layout_height="match_parent" android:scaleType="centerCrop" android:src="@drawable/ic_exercise_preset_person" android:contentDescription="@string/preset_image" />
 
                 </com.google.android.material.card.MaterialCardView>
 

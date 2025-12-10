@@ -29,6 +29,17 @@ android {
 
         // Add Google Maps API key from local.properties
         manifestPlaceholders["MAPS_API_KEY"] = localProperties.getProperty("MAPS_API_KEY", "")
+        
+        // FreeImage API key for image uploads
+        // SECURITY NOTE: This key is embedded in the APK and can be extracted.
+        // The default key is FreeImage.host's PUBLIC demo key
+        // with rate limits and intended for development/testing only.
+        // For production use:
+        // 1. Register your own key at https://freeimage.host/
+        // 2. Consider fetching keys from a secure backend or Firebase Remote Config
+        // 3. Implement rate limiting and abuse detection on your backend
+        // 4. The public demo key has usage limits - not suitable for production
+        buildConfigField("String", "FREEIMAGE_API_KEY", "\"${localProperties.getProperty("FREEIMAGE_API_KEY", "")}\"")
     }
 
     buildTypes {
@@ -49,6 +60,7 @@ android {
     }
     buildFeatures {
         viewBinding = true
+        buildConfig = true
     }
 }
 
@@ -81,6 +93,9 @@ dependencies {
     // Firebase
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.auth)
+
+    // Glide for image loading
+    implementation(libs.glide)
 
     // RecyclerView
     implementation(libs.androidx.recyclerview)

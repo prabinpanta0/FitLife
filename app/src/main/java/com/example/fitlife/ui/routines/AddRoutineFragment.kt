@@ -13,6 +13,7 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
+import com.bumptech.glide.Glide
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -34,6 +35,12 @@ import java.util.Date
 import java.util.Locale
 
 class AddRoutineFragment : Fragment() {
+    
+    companion object {
+        // Prefix to identify relative paths stored in the database
+        // This distinguishes relative paths from absolute paths or URIs
+        private const val RELATIVE_PATH_PREFIX = "@filesDir/"
+    }
 
     private var _binding: FragmentAddRoutineBinding? = null
     private val binding get() = _binding!!
@@ -71,15 +78,45 @@ class AddRoutineFragment : Fragment() {
         ActivityResultContracts.TakePicture()
     ) { success ->
         if (success) {
-            currentExercisePhotoUri?.let { uri ->
-                pendingImageUri = uri.toString()
-                pendingImageResourceName = null
-                currentDialogBinding?.let { binding ->
-                    binding.ivExerciseImage.setImageURI(uri)
-                    binding.ivExerciseImage.visibility = View.VISIBLE
-                    binding.llImagePlaceholder.visibility = View.GONE
+            currentExercisePhotoUri?.let { cacheUri ->
+                // Copy from cache to internal storage for persistence
+                val result = copyImageToInternalStorage(cacheUri)
+                if (result != null) {
+                    val (savedFile, relativePath) = result
+                    // Store relative path with prefix for stable persistence
+                    pendingImageUri = RELATIVE_PATH_PREFIX + relativePath
+                    pendingImageResourceName = null
+                    currentDialogBinding?.let { binding ->
+                        // Use Glide for async image loading
+                        if (isAdded) {
+                            Glide.with(requireContext())
+                                .load(savedFile)
+                                .centerCrop()
+                                .into(binding.ivExerciseImage)
+                        }
+                        binding.ivExerciseImage.visibility = View.VISIBLE
+                        binding.llImagePlaceholder.visibility = View.GONE
+                    }
+                    
+                    // Clean up temporary cache file
+                    try {
+                        val cacheFile = File(cacheUri.path ?: "")
+                        if (cacheFile.exists()) {
+                            cacheFile.delete()
+                        }
+                    } catch (e: Exception) {
+                        // Ignore cleanup errors
+                    }
+                    
+                    context?.let { ctx ->
+                        Toast.makeText(ctx, getString(R.string.photo_captured), Toast.LENGTH_SHORT).show()
+                    }
+                } else {
+                    context?.let { ctx ->
+                        Toast.makeText(ctx, getString(R.string.error_saving_photo), Toast.LENGTH_SHORT).show()
+                    }
                 }
-                Toast.makeText(requireContext(), getString(R.string.photo_captured), Toast.LENGTH_SHORT).show()
+                currentExercisePhotoUri = null
             }
         }
     }
@@ -89,12 +126,20 @@ class AddRoutineFragment : Fragment() {
         ActivityResultContracts.GetContent()
     ) { uri ->
         uri?.let {
-            val savedUri = copyImageToInternalStorage(it)
-            if (savedUri != null) {
-                pendingImageUri = savedUri.toString()
+            val result = copyImageToInternalStorage(it)
+            if (result != null) {
+                val (savedFile, relativePath) = result
+                // Store relative path with prefix for stable persistence
+                pendingImageUri = RELATIVE_PATH_PREFIX + relativePath
                 pendingImageResourceName = null
                 currentDialogBinding?.let { binding ->
-                    binding.ivExerciseImage.setImageURI(savedUri)
+                    // Use Glide for async image loading
+                    if (isAdded) {
+                        Glide.with(requireContext())
+                            .load(savedFile)
+                            .centerCrop()
+                            .into(binding.ivExerciseImage)
+                    }
                     binding.ivExerciseImage.visibility = View.VISIBLE
                     binding.llImagePlaceholder.visibility = View.GONE
                 }
@@ -144,11 +189,16 @@ class AddRoutineFragment : Fragment() {
         return File.createTempFile("EXERCISE_${timeStamp}_", ".jpg", storageDir)
     }
     
-    private fun copyImageToInternalStorage(sourceUri: Uri): Uri? {
+    /**
+     * Copies an image to internal storage and returns both the File and relative path.
+     * @return Pair of (File, relativePath) or null if copy failed
+     */
+    private fun copyImageToInternalStorage(sourceUri: Uri): Pair<File, String>? {
         return try {
             val inputStream = requireContext().contentResolver.openInputStream(sourceUri)
             val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
-            val file = File(requireContext().filesDir, "exercise_photo_$timeStamp.jpg")
+            val fileName = "exercise_photo_$timeStamp.jpg"
+            val file = File(requireContext().filesDir, fileName)
             
             inputStream?.use { input ->
                 FileOutputStream(file).use { output ->
@@ -156,9 +206,34 @@ class AddRoutineFragment : Fragment() {
                 }
             }
             
-            Uri.fromFile(file)
+            // Return both the file (for immediate display) and the relative filename (for storage)
+            Pair(file, fileName)
         } catch (e: Exception) {
             null
+        }
+    }
+    
+    /**
+     * Resolves an image URI string to a source that Glide can load.
+     * Handles relative paths (prefixed with @filesDir/), absolute paths, and various URI schemes.
+     */
+    private fun resolveImageSource(imageUri: String): Any {
+        return when {
+            // Relative path stored with our prefix - reconstruct full path
+            imageUri.startsWith(RELATIVE_PATH_PREFIX) -> {
+                val relativePath = imageUri.removePrefix(RELATIVE_PATH_PREFIX)
+                File(requireContext().filesDir, relativePath)
+            }
+            // Cloud URL
+            imageUri.startsWith("http://") || imageUri.startsWith("https://") -> imageUri
+            // File URI
+            imageUri.startsWith("file://") -> Uri.parse(imageUri)
+            // Content URI
+            imageUri.startsWith("content://") -> Uri.parse(imageUri)
+            // Legacy absolute path (e.g., /data/...) - try to load directly
+            imageUri.startsWith("/") -> File(imageUri)
+            // Fallback: try as URI
+            else -> Uri.parse(imageUri)
         }
     }
 
@@ -330,9 +405,9 @@ class AddRoutineFragment : Fragment() {
         
         // Setup preset image selection
         dialogBinding.cardPreset1.setOnClickListener {
-            pendingImageResourceName = "a0696890"
+            pendingImageResourceName = "ic_exercise_preset_workout"
             pendingImageUri = null
-            dialogBinding.ivExerciseImage.setImageResource(R.drawable.a0696890)
+            dialogBinding.ivExerciseImage.setImageResource(R.drawable.ic_exercise_preset_workout)
             dialogBinding.ivExerciseImage.visibility = View.VISIBLE
             dialogBinding.llImagePlaceholder.visibility = View.GONE
             // Highlight selected preset
@@ -341,9 +416,9 @@ class AddRoutineFragment : Fragment() {
         }
         
         dialogBinding.cardPreset2.setOnClickListener {
-            pendingImageResourceName = "a478546"
+            pendingImageResourceName = "ic_exercise_preset_person"
             pendingImageUri = null
-            dialogBinding.ivExerciseImage.setImageResource(R.drawable.a478546)
+            dialogBinding.ivExerciseImage.setImageResource(R.drawable.ic_exercise_preset_person)
             dialogBinding.ivExerciseImage.visibility = View.VISIBLE
             dialogBinding.llImagePlaceholder.visibility = View.GONE
             // Highlight selected preset
@@ -427,28 +502,38 @@ class AddRoutineFragment : Fragment() {
         dialogBinding.etInstructions.setText(exercise.instructions)
         
         // Load existing image if present
-        when {
-            !exercise.imageUri.isNullOrEmpty() -> {
-                try {
-                    dialogBinding.ivExerciseImage.setImageURI(Uri.parse(exercise.imageUri))
-                    dialogBinding.ivExerciseImage.visibility = View.VISIBLE
-                    dialogBinding.llImagePlaceholder.visibility = View.GONE
-                } catch (e: Exception) {
-                    // Fallback - keep placeholder visible
+        exercise.imageUri?.takeIf { it.isNotEmpty() }?.let { uri ->
+            try {
+                // Use helper to resolve the image source
+                val loadSource = resolveImageSource(uri)
+                
+                if (isAdded) {
+                    Glide.with(requireContext())
+                        .load(loadSource)
+                        .centerCrop()
+                        .placeholder(R.drawable.ic_image)
+                        .error(R.drawable.ic_image)
+                        .into(dialogBinding.ivExerciseImage)
                 }
+                dialogBinding.ivExerciseImage.visibility = View.VISIBLE
+                dialogBinding.llImagePlaceholder.visibility = View.GONE
+            } catch (e: Exception) {
+                // Fallback - keep placeholder visible
             }
-            !exercise.imageResourceName.isNullOrEmpty() -> {
-                val resId = requireContext().resources.getIdentifier(
-                    exercise.imageResourceName, "drawable", requireContext().packageName
-                )
-                if (resId != 0) {
-                    dialogBinding.ivExerciseImage.setImageResource(resId)
-                    dialogBinding.ivExerciseImage.visibility = View.VISIBLE
-                    dialogBinding.llImagePlaceholder.visibility = View.GONE
-                    // Highlight the preset
-                    if (exercise.imageResourceName == "a0696890") {
+        } ?: exercise.imageResourceName?.takeIf { it.isNotEmpty() }?.let { resourceName ->
+            val resId = requireContext().resources.getIdentifier(
+                resourceName, "drawable", requireContext().packageName
+            )
+            if (resId != 0) {
+                dialogBinding.ivExerciseImage.setImageResource(resId)
+                dialogBinding.ivExerciseImage.visibility = View.VISIBLE
+                dialogBinding.llImagePlaceholder.visibility = View.GONE
+                // Highlight the preset
+                when (resourceName) {
+                    "ic_exercise_preset_workout" -> {
                         dialogBinding.cardPreset1.strokeColor = requireContext().getColor(R.color.primary)
-                    } else if (exercise.imageResourceName == "a478546") {
+                    }
+                    "ic_exercise_preset_person" -> {
                         dialogBinding.cardPreset2.strokeColor = requireContext().getColor(R.color.primary)
                     }
                 }
@@ -466,9 +551,9 @@ class AddRoutineFragment : Fragment() {
         
         // Setup preset image selection
         dialogBinding.cardPreset1.setOnClickListener {
-            pendingImageResourceName = "a0696890"
+            pendingImageResourceName = "ic_exercise_preset_workout"
             pendingImageUri = null
-            dialogBinding.ivExerciseImage.setImageResource(R.drawable.a0696890)
+            dialogBinding.ivExerciseImage.setImageResource(R.drawable.ic_exercise_preset_workout)
             dialogBinding.ivExerciseImage.visibility = View.VISIBLE
             dialogBinding.llImagePlaceholder.visibility = View.GONE
             dialogBinding.cardPreset1.strokeColor = requireContext().getColor(R.color.primary)
@@ -476,9 +561,9 @@ class AddRoutineFragment : Fragment() {
         }
         
         dialogBinding.cardPreset2.setOnClickListener {
-            pendingImageResourceName = "a478546"
+            pendingImageResourceName = "ic_exercise_preset_person"
             pendingImageUri = null
-            dialogBinding.ivExerciseImage.setImageResource(R.drawable.a478546)
+            dialogBinding.ivExerciseImage.setImageResource(R.drawable.ic_exercise_preset_person)
             dialogBinding.ivExerciseImage.visibility = View.VISIBLE
             dialogBinding.llImagePlaceholder.visibility = View.GONE
             dialogBinding.cardPreset2.strokeColor = requireContext().getColor(R.color.primary)

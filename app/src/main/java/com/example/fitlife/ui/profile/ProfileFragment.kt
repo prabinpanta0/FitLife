@@ -3,6 +3,7 @@ package com.example.fitlife.ui.profile
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,12 +17,15 @@ import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import com.bumptech.glide.Glide
 import com.example.fitlife.FitLifeApplication
 import com.example.fitlife.R
+import com.example.fitlife.utils.ImageUploadService
 import com.example.fitlife.utils.PermissionManager
 import com.example.fitlife.utils.SessionManager
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.progressindicator.CircularProgressIndicator
 import com.google.android.material.switchmaterial.SwitchMaterial
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
@@ -34,6 +38,10 @@ import java.util.Date
 import java.util.Locale
 
 class ProfileFragment : Fragment() {
+    
+    companion object {
+        private const val TAG = "ProfileFragment"
+    }
 
     private lateinit var tvAvatarInitials: TextView
     private lateinit var ivProfilePhoto: ImageView
@@ -53,6 +61,7 @@ class ProfileFragment : Fragment() {
 
     // Photo capture variables
     private var currentPhotoUri: Uri? = null
+    private var currentPhotoFile: File? = null  // Store actual file for proper cleanup
     private var profilePhotoUri: Uri? = null
 
     private val userRepository by lazy {
@@ -91,10 +100,50 @@ class ProfileFragment : Fragment() {
         ActivityResultContracts.TakePicture()
     ) { success ->
         if (success) {
-            currentPhotoUri?.let { uri ->
-                profilePhotoUri = uri
-                saveAndDisplayProfilePhoto(uri)
+            currentPhotoUri?.let { cacheUri ->
+                // Copy from cache to internal storage for persistence
+                val persistentUri = copyImageToInternalStorage(cacheUri)
+                if (persistentUri != null) {
+                    profilePhotoUri = persistentUri
+                    saveAndDisplayProfilePhoto(persistentUri)
+                    
+                    // Clean up the temporary cache file using the stored File reference
+                    currentPhotoFile?.let { file ->
+                        try {
+                            if (file.exists()) {
+                                val deleted = file.delete()
+                                if (deleted) {
+                                    Log.d(TAG, "Deleted temporary camera file: ${file.name}")
+                                } else {
+                                    Log.w(TAG, "Failed to delete temporary camera file: ${file.name}")
+                                }
+                            }
+                        } catch (e: Exception) {
+                            Log.e(TAG, "Error deleting temporary camera file: ${e.message}", e)
+                        }
+                    }
+                } else {
+                    // Failed to copy, show error
+                    context?.let { ctx ->
+                        Toast.makeText(ctx, getString(R.string.error_saving_photo), Toast.LENGTH_SHORT).show()
+                    }
+                }
+                currentPhotoUri = null
+                currentPhotoFile = null
             }
+        } else {
+            // Camera was cancelled, clean up the temp file
+            currentPhotoFile?.let { file ->
+                try {
+                    if (file.exists()) {
+                        file.delete()
+                    }
+                } catch (e: Exception) {
+                    Log.e(TAG, "Error cleaning up cancelled camera file: ${e.message}", e)
+                }
+            }
+            currentPhotoUri = null
+            currentPhotoFile = null
         }
     }
 
@@ -112,24 +161,81 @@ class ProfileFragment : Fragment() {
     }
     
     private fun saveAndDisplayProfilePhoto(uri: Uri) {
-        // Display the photo
-        ivProfilePhoto.setImageURI(uri)
-        ivProfilePhoto.visibility = View.VISIBLE
-        tvAvatarInitials.visibility = View.GONE
+        // Display the photo immediately using Glide (async, off UI thread)
+        if (isAdded) {
+            ivProfilePhoto.visibility = View.VISIBLE
+            tvAvatarInitials.visibility = View.GONE
+            Glide.with(requireContext())
+                .load(uri)
+                .circleCrop()
+                .placeholder(R.drawable.ic_person)
+                .into(ivProfilePhoto)
+        }
         
-        // Save to user profile in database
+        // Upload to cloud and save URL to database
         val userId = sessionManager.getCurrentUserId()
-        if (userId != -1L) {
-            viewLifecycleOwner.lifecycleScope.launch {
-                try {
-                    val user = userRepository.getUserById(userId)
-                    user?.let {
-                        val updatedUser = it.copy(profilePhotoUri = uri.toString())
-                        userRepository.updateUser(updatedUser)
-                        Toast.makeText(requireContext(), getString(R.string.profile_photo_updated), Toast.LENGTH_SHORT).show()
+        if (userId == -1L) {
+            context?.let { ctx ->
+                Toast.makeText(ctx, getString(R.string.error_not_logged_in), Toast.LENGTH_SHORT).show()
+            }
+            return
+        }
+        
+        viewLifecycleOwner.lifecycleScope.launch {
+            try {
+                context?.let { ctx ->
+                    Toast.makeText(ctx, "Uploading image...", Toast.LENGTH_SHORT).show()
+                }
+                
+                // Upload to FreeImage.host
+                val uploadResult = ImageUploadService.uploadImage(requireContext(), uri)
+                
+                uploadResult.onSuccess { imageUrl ->
+                    // Save the cloud URL to the database
+                    viewLifecycleOwner.lifecycleScope.launch {
+                        val user = userRepository.getUserById(userId)
+                        if (user != null) {
+                            val updatedUser = user.copy(profilePhotoUri = imageUrl)
+                            userRepository.updateUser(updatedUser)
+                            context?.let { ctx ->
+                                Toast.makeText(ctx, getString(R.string.profile_photo_updated), Toast.LENGTH_SHORT).show()
+                            }
+                            
+                            // Load from cloud URL using Glide
+                            if (isAdded) {
+                                Glide.with(requireContext())
+                                    .load(imageUrl)
+                                    .circleCrop()
+                                    .into(ivProfilePhoto)
+                            }
+                        } else {
+                            context?.let { ctx ->
+                                Toast.makeText(ctx, getString(R.string.error_user_not_found), Toast.LENGTH_SHORT).show()
+                            }
+                        }
                     }
-                } catch (e: Exception) {
-                    Toast.makeText(requireContext(), getString(R.string.error_generic), Toast.LENGTH_SHORT).show()
+                }.onFailure { error ->
+                    Log.e(TAG, "Cloud upload failed: ${error.message}", error)
+                    // Fallback: save the content URI string if cloud upload fails
+                    // The content:// URI will work with Glide and is safe on API 24+
+                    val uriString = uri.toString()
+                    val user = userRepository.getUserById(userId)
+                    if (user != null) {
+                        val updatedUser = user.copy(profilePhotoUri = uriString)
+                        userRepository.updateUser(updatedUser)
+                        context?.let { ctx ->
+                            Toast.makeText(ctx, "Cloud upload failed: ${error.message}. Saved locally.", Toast.LENGTH_LONG).show()
+                        }
+                    } else {
+                        context?.let { ctx ->
+                            Toast.makeText(ctx, getString(R.string.error_user_not_found), Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                }
+            } catch (e: Exception) {
+                Log.e(TAG, "Error saving photo: ${e.message}", e)
+                context?.let { ctx ->
+                    Toast.makeText(ctx, "Error saving photo: ${e.message}", Toast.LENGTH_LONG).show()
                 }
             }
         }
@@ -137,29 +243,89 @@ class ProfileFragment : Fragment() {
     
     private fun copyImageToInternalStorage(sourceUri: Uri): Uri? {
         return try {
-            val inputStream = requireContext().contentResolver.openInputStream(sourceUri)
-            val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
-            val file = File(requireContext().filesDir, "profile_photo_$timeStamp.jpg")
+            val ctx = context ?: return null
             
-            inputStream?.use { input ->
+            // Delete previous profile photos to prevent buildup
+            deleteOldProfilePhotos()
+            
+            val inputStream = ctx.contentResolver.openInputStream(sourceUri)
+            if (inputStream == null) {
+                Log.e(TAG, "Failed to open input stream for URI: $sourceUri")
+                return null
+            }
+            
+            val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
+            val file = File(ctx.filesDir, "profile_photo_$timeStamp.jpg")
+            
+            inputStream.use { input ->
                 FileOutputStream(file).use { output ->
                     input.copyTo(output)
                 }
             }
             
-            Uri.fromFile(file)
+            // Return a content:// URI via FileProvider to avoid FileUriExposedException on API 24+
+            FileProvider.getUriForFile(
+                ctx,
+                "${ctx.packageName}.fileprovider",
+                file
+            )
         } catch (e: Exception) {
+            Log.e(TAG, "Error copying image to internal storage: ${e.message}", e)
             null
         }
     }
     
+    /**
+     * Deletes old profile photo files to prevent storage buildup.
+     * Only deletes files matching the profile_photo_*.jpg pattern.
+     */
+    private fun deleteOldProfilePhotos() {
+        try {
+            val ctx = context ?: return
+            val filesDir = ctx.filesDir
+            val profilePhotos = filesDir.listFiles { file ->
+                file.name.startsWith("profile_photo_") && file.name.endsWith(".jpg")
+            }
+            
+            profilePhotos?.forEach { file ->
+                val deleted = file.delete()
+                if (deleted) {
+                    Log.d(TAG, "Deleted old profile photo: ${file.name}")
+                } else {
+                    Log.w(TAG, "Failed to delete old profile photo: ${file.name}")
+                }
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "Error deleting old profile photos: ${e.message}", e)
+        }
+    }
+    
     private fun loadAndDisplayProfilePhoto(photoUriString: String?) {
-        if (!photoUriString.isNullOrEmpty()) {
+        if (!photoUriString.isNullOrEmpty() && isAdded) {
             try {
-                val uri = Uri.parse(photoUriString)
-                ivProfilePhoto.setImageURI(uri)
                 ivProfilePhoto.visibility = View.VISIBLE
                 tvAvatarInitials.visibility = View.GONE
+                
+                // Determine the source type and load with Glide (async, off UI thread)
+                val loadSource: Any = when {
+                    // Cloud URL
+                    photoUriString.startsWith("http://") || photoUriString.startsWith("https://") -> photoUriString
+                    // File URI (file://...)
+                    photoUriString.startsWith("file://") -> Uri.parse(photoUriString)
+                    // Content URI (content://...)
+                    photoUriString.startsWith("content://") -> Uri.parse(photoUriString)
+                    // Raw file path (e.g., /data/...)
+                    photoUriString.startsWith("/") -> File(photoUriString)
+                    // Fallback: try as URI
+                    else -> Uri.parse(photoUriString)
+                }
+                
+                Glide.with(requireContext())
+                    .load(loadSource)
+                    .circleCrop()
+                    .placeholder(R.drawable.ic_person)
+                    .error(R.drawable.ic_person)
+                    .into(ivProfilePhoto)
             } catch (e: Exception) {
                 // Fallback to initials
                 ivProfilePhoto.visibility = View.GONE
@@ -328,6 +494,7 @@ class ProfileFragment : Fragment() {
     private fun launchCamera() {
         try {
             val photoFile = createImageFile()
+            currentPhotoFile = photoFile  // Store file reference for cleanup
             currentPhotoUri = FileProvider.getUriForFile(
                 requireContext(),
                 "${requireContext().packageName}.fileprovider",

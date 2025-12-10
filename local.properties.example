@@ -12,3 +12,13 @@ sdk.dir=/path/to/your/Android/Sdk
 # Get from: https://console.cloud.google.com/google/maps-apis
 # Enable "Maps SDK for Android" for your project
 MAPS_API_KEY=YOUR_GOOGLE_MAPS_API_KEY_HERE
+
+# FreeImage.host API Key for image uploads
+# Get from: https://freeimage.host/ (create account for your own key)
+# The default public demo key can be used for development
+# but has rate limits and is not recommended for production.
+# SECURITY NOTE: This key is embedded in the APK. For production, consider:
+# - Using your backend as a proxy for uploads
+# - Fetching keys from Firebase Remote Config
+# - Using a key with app/domain restrictions if available
+FREEIMAGE_API_KEY=

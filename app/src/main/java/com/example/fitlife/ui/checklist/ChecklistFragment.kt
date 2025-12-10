@@ -86,21 +86,30 @@ class ChecklistFragment : Fragment() {
         ActivityResultContracts.PickContact()
     ) { contactUri ->
         contactUri?.let { uri ->
+            // Guard against fragment detachment - use nullable context
+            val ctx = context ?: return@registerForActivityResult
+            
             val phoneNumber = getPhoneNumberFromContact(uri)
             if (phoneNumber != null) {
-                currentPhoneInput?.setText(phoneNumber)
-                Toast.makeText(requireContext(), getString(R.string.contact_selected, phoneNumber), Toast.LENGTH_SHORT).show()
+                // Only update UI if fragment is still attached
+                if (isAdded && currentPhoneInput != null) {
+                    currentPhoneInput?.setText(phoneNumber)
+                    Toast.makeText(ctx, getString(R.string.contact_selected, phoneNumber), Toast.LENGTH_SHORT).show()
+                }
             } else {
-                Toast.makeText(requireContext(), getString(R.string.no_phone_for_contact), Toast.LENGTH_SHORT).show()
+                if (isAdded) {
+                    Toast.makeText(ctx, getString(R.string.no_phone_for_contact), Toast.LENGTH_SHORT).show()
+                }
             }
         }
     }
     
     private fun getPhoneNumberFromContact(contactUri: Uri): String? {
+        val ctx = context ?: return null
         var phoneNumber: String? = null
         
         // Get contact ID from URI
-        val cursor = requireContext().contentResolver.query(
+        val cursor = ctx.contentResolver.query(
             contactUri,
             arrayOf(ContactsContract.Contacts._ID, ContactsContract.Contacts.HAS_PHONE_NUMBER),
             null, null, null
@@ -113,7 +122,7 @@ class ChecklistFragment : Fragment() {
                 
                 if (hasPhone > 0) {
                     // Query phone numbers
-                    val phoneCursor = requireContext().contentResolver.query(
+                    val phoneCursor = ctx.contentResolver.query(
                         ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
                         arrayOf(ContactsContract.CommonDataKinds.Phone.NUMBER),
                         "${ContactsContract.CommonDataKinds.Phone.CONTACT_ID} = ?",
