@@ -1,114 +1,154 @@
-# FitLife - Fitness Tracking Android App
+# FitLife
 
 A modern fitness tracking application built with Kotlin for Android. Features workout routine management, equipment checklists with SMS delegation, and gym location geotagging.
 
 ## Features
 
-- 🔐 **Firebase Authentication** - Secure email/password authentication
-- 🏋️ **Workout Routines** - Create and manage weekly workout plans
-- ✅ **Equipment Checklist** - Track equipment with SMS delegation
-- 📍 **Geotagging** - Save and navigate to your favorite workout locations
-- 🌙 **Dark Mode** - Beautiful Warm Ink dark theme
+-   **Firebase Authentication** - Secure email/password authentication
+-   **Workout Routines** - Create and manage weekly workout plans
+-   **Equipment Checklist** - Track equipment with SMS delegation
+-   **Geotagging** - Save and navigate to your favorite workout locations
+-   **Dark Mode** - Beautiful Warm Ink dark theme
 
-## Setup Instructions
+## Getting Started
 
-### 1. Clone the Repository
+### Prerequisites
 
-```bash
-git clone <your-repo-url>
-cd FitLife
-```
+-   Android Studio (latest stable version)
+-   JDK 17 or higher
+-   Android SDK with minimum API level 24
 
-### 2. Configure Google Maps API
+### Installation
 
-1. Go to [Google Cloud Console](https://console.cloud.google.com/google/maps-apis)
-2. Create a new project or select an existing one
-3. Enable "Maps SDK for Android"
-4. Create an API key
-5. Copy `local.properties.example` to `local.properties`
-6. Add your API key:
-   ```properties
-   MAPS_API_KEY=your_actual_api_key_here
-   ```
+1. **Clone the Repository**
 
-### 3. Configure Firebase
+    ```bash
+    git clone https://github.com/prabinpanta0/FitLife.git
+    cd FitLife
+    ```
 
-1. Go to [Firebase Console](https://console.firebase.google.com)
-2. Create a new project or select an existing one
-3. Add an Android app with package name: `com.example.fitlife`
-4. Download `google-services.json`
-5. Place it in the `app/` directory
+2. **Configure Google Maps API**
 
-#### Firebase Services Used:
-- **Firebase Authentication** - Enable Email/Password sign-in method in Firebase Console
+    - Navigate to [Google Cloud Console](https://console.cloud.google.com/google/maps-apis)
+    - Create a new project or select an existing one
+    - Enable "Maps SDK for Android"
+    - Create an API key
+    - Copy `local.properties.example` to `local.properties`
+    - Add your API key:
 
-### 4. Build and Run
+        ```properties
+        MAPS_API_KEY=your_actual_api_key_here
+        ```
 
-```bash
-./gradlew assembleDebug
-```
+3. **Configure Firebase**
 
-Or open in Android Studio and run directly.
+    - Navigate to [Firebase Console](https://console.firebase.google.com)
+    - Create a new project or select an existing one
+    - Add an Android app with package name: `com.example.fitlife`
+    - Download `google-services.json`
+    - Place it in the `app/` directory
+    - Enable Email/Password sign-in method in Firebase Authentication
+
+4. **Build and Run**
+
+    ```bash
+    ./gradlew assembleDebug
+    ```
+
+    Alternatively, open the project in Android Studio and run directly.
 
 ## Project Structure
 
 ```
-app/
-├── src/main/
-│   ├── java/com/example/fitlife/
-│   │   ├── data/
-│   │   │   ├── dao/          # Room database DAOs
-│   │   │   ├── model/        # Data models
-│   │   │   └── repository/   # Repository pattern
-│   │   ├── ui/
-│   │   │   ├── auth/         # Login & Registration
-│   │   │   ├── checklist/    # Equipment checklist
-│   │   │   ├── home/         # Dashboard
-│   │   │   ├── map/          # Geotagging
-│   │   │   ├── profile/      # User profile
-│   │   │   └── routines/     # Workout routines
-│   │   └── utils/            # Utility classes
-│   └── res/
-│       ├── layout/           # XML layouts
-│       ├── navigation/       # Navigation graph
-│       └── values/           # Colors, strings, themes
+app/src/main/
+├── java/com/example/fitlife/
+│   ├── data/
+│   │   ├── dao/              # Room database DAOs
+│   │   ├── model/            # Data models
+│   │   └── repository/       # Repository pattern
+│   ├── ui/
+│   │   ├── auth/             # Login and Registration
+│   │   ├── checklist/        # Equipment checklist
+│   │   ├── home/             # Dashboard
+│   │   ├── map/              # Geotagging
+│   │   ├── profile/          # User profile
+│   │   └── routines/         # Workout routines
+│   └── utils/                # Utility classes
+└── res/
+    ├── layout/               # XML layouts
+    ├── navigation/           # Navigation graph
+    └── values/               # Colors, strings, themes
 ```
 
 ## Tech Stack
 
-- **Language**: Kotlin
-- **Min SDK**: 24 (Android 7.0)
-- **Target SDK**: 34 (Android 14)
-- **Architecture**: Repository Pattern
-- **Database**: Room (local storage)
-- **Authentication**: Firebase Auth
-- **Maps**: Google Maps SDK
-- **UI**: Material Design 3
+| Component      | Technology         |
+| -------------- | ------------------ |
+| Language       | Kotlin             |
+| Min SDK        | 24 (Android 7.0)   |
+| Target SDK     | 34 (Android 14)    |
+| Architecture   | Repository Pattern |
+| Local Database | Room               |
+| Authentication | Firebase Auth      |
+| Maps           | Google Maps SDK    |
+| UI Framework   | Material Design 3  |
 
-## Color Themes
+## Architecture Diagrams
 
-### Light Mode (Cloud Dancer)
-- Background: PANTONE 11-4201 TCX Cloud Dancer (`#F0EDE5`)
+### Application Architecture (Layer Diagram)
 
-### Dark Mode (Warm Ink)
-- Background: Warm Ink (`#2A2825`) - A warmer, darker variant
+![Application Architecture](diagram_mermaid/image.png)
 
-## Security Notes
+### Data Flow Diagram (Level 0 - Context)
 
-⚠️ **Never commit the following files:**
-- `local.properties` - Contains SDK path and API keys
-- `app/google-services.json` - Firebase configuration
-- `.env` or `.env.local` - Environment variables
-- Any `*.keystore` or `*.jks` files
+![Data Flow Diagram](diagram_mermaid/image-1.png)
 
-These files are already in `.gitignore`.
+### Data Flow Diagram (Level 1 - Detailed)
+
+![Data Flow Diagram](diagram_mermaid/image-2.png)
+
+### Entity Relationship Diagram
+
+![Entity Relation Diagram](diagram_mermaid/image-3.png)
+
+### User Authentication Flow
+
+![User Authentication Flow](diagram_mermaid/image-4.png)
+
+### Navigation Flow Diagram
+
+![Navigation Flow Diagram](diagram_mermaid/image-6.png)
+
+### Workout Creation Process Flow
+
+![Workout Creation Process Flow](diagram_mermaid/image-7.png)
+
+### Component Diagram
+
+![Component Diagram](diagram_mermaid/image-8.png)
+
+### Class Diagram (Core Models)
+
+![Class Diagram](diagram_mermaid/image-9.png)
+
+## Themes
+
+| Mode  | Name         | Background Color |
+| ----- | ------------ | ---------------- |
+| Light | Cloud Dancer | `#F0EDE5`        |
+| Dark  | Warm Ink     | `#2A2825`        |
+
+## Security
+
+The following files contain sensitive information and must not be committed to version control:
+
+-   `local.properties` - SDK path and API keys
+-   `app/google-services.json` - Firebase configuration
+-   `.env` or `.env.local` - Environment variables
+-   `*.keystore` or `*.jks` files - Signing keys
+
+These files are included in `.gitignore` by default.
 
 ## License
 
 This project is for educational purposes.
-
-```
-idleshade@Quanta
-
-User: @prabin
-```

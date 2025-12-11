@@ -1,0 +1,319 @@
+{
+  "version": "0.2",
+  "pages": [
+    {
+      "id": "add-routine-page",
+      "name": "Add Routine Screen",
+      "shapes": [
+        {
+          "id": "phone-frame",
+          "x": 50,
+          "y": 30,
+          "width": 300,
+          "height": 560,
+          "type": "mobilePhone",
+          "allowsInlineEdition": false,
+          "typeOfTransformer": ["top-left", "top-center", "top-right", "middle-left", "middle-right", "bottom-left", "bottom-center", "bottom-right"]
+        },
+        
+        
+        {
+          "id": "back-arrow",
+          "x": 70,
+          "y": 80,
+          "width": 20,
+          "height": 20,
+          "type": "smalltext",
+          "text": "<",
+          "allowsInlineEdition": true,
+          "typeOfTransformer": ["middle-left", "middle-right"],
+          "otherProps": {
+            "textColor": "#333333",
+            "fontVariant": "bold",
+            "fontStyle": "normal",
+            "textDecoration": "none",
+            "fontSize": 20,
+            "textAlignment": "center"
+          }
+        },
+        {
+          "id": "screen-title",
+          "x": 150,
+          "y": 80,
+          "width": 100,
+          "height": 22,
+          "type": "heading2",
+          "text": "Add Routine",
+          "allowsInlineEdition": true,
+          "typeOfTransformer": ["middle-left", "middle-right"],
+          "otherProps": {
+            "textColor": "#333333",
+            "fontVariant": "bold",
+            "fontStyle": "normal",
+            "textDecoration": "none",
+            "fontSize": 18,
+            "textAlignment": "center"
+          }
+        },
+        {
+          "id": "name-label",
+          "x": 80,
+          "y": 115,
+          "width": 100,
+          "height": 16,
+          "type": "smalltext",
+          "text": "Routine Name",
+          "allowsInlineEdition": true,
+          "typeOfTransformer": ["middle-left", "middle-right"],
+          "otherProps": {
+            "textColor": "#666666",
+            "fontVariant": "bold",
+            "fontStyle": "normal",
+            "textDecoration": "none",
+            "fontSize": 12,
+            "textAlignment": "left"
+          }
+        },
+        {
+          "id": "name-input",
+          "x": 70,
+          "y": 135,
+          "width": 260,
+          "height": 40,
+          "type": "input",
+          "text": "e.g., Morning Workout",
+          "allowsInlineEdition": true,
+          "typeOfTransformer": ["middle-left", "middle-right"],
+          "otherProps": {
+            "textColor": "#999999"
+          }
+        },
+        {
+          "id": "description-label",
+          "x": 80,
+          "y": 190,
+          "width": 80,
+          "height": 16,
+          "type": "smalltext",
+          "text": "Description",
+          "allowsInlineEdition": true,
+          "typeOfTransformer": ["middle-left", "middle-right"],
+          "otherProps": {
+            "textColor": "#666666",
+            "fontVariant": "bold",
+            "fontStyle": "normal",
+            "textDecoration": "none",
+            "fontSize": 12,
+            "textAlignment": "left"
+          }
+        },
+        {
+          "id": "description-input",
+          "x": 70,
+          "y": 210,
+          "width": 260,
+          "height": 60,
+          "type": "rectangle",
+          "text": "Add a description...",
+          "allowsInlineEdition": true,
+          "typeOfTransformer": ["top-left", "top-center", "top-right", "middle-left", "middle-right", "bottom-left", "bottom-center", "bottom-right"],
+          "otherProps": {
+            "strokeColor": "#E0E0E0",
+            "backgroundColor": "#FFFFFF"
+          }
+        },
+        {
+          "id": "exercises-label",
+          "x": 80,
+          "y": 290,
+          "width": 80,
+          "height": 16,
+          "type": "smalltext",
+          "text": "Exercises",
+          "allowsInlineEdition": true,
+          "typeOfTransformer": ["middle-left", "middle-right"],
+          "otherProps": {
+            "textColor": "#666666",
+            "fontVariant": "bold",
+            "fontStyle": "normal",
+            "textDecoration": "none",
+            "fontSize": 12,
+            "textAlignment": "left"
+          }
+        },
+        {
+          "id": "add-exercise-btn",
+          "x": 240,
+          "y": 275,
+          "width": 80,
+          "height": 20,
+          "type": "button",
+          "text": "+ Add",
+          "allowsInlineEdition": true,
+          "typeOfTransformer": ["middle-left", "middle-right"],
+          "otherProps": {
+            "textColor": "#4CAF50",
+            "backgroundColor": "#E8F5E9"
+          }
+        },
+        {
+          "id": "exercise-item-1",
+          "x": 70,
+          "y": 315,
+          "width": 260,
+          "height": 50,
+          "type": "rectangle",
+          "allowsInlineEdition": false,
+          "typeOfTransformer": ["top-left", "top-center", "top-right", "middle-left", "middle-right", "bottom-left", "bottom-center", "bottom-right"],
+          "otherProps": {
+            "strokeColor": "#E0E0E0",
+            "backgroundColor": "#F5F5F5"
+          }
+        },
+        {
+          "id": "exercise-1-name",
+          "x": 85,
+          "y": 325,
+          "width": 100,
+          "height": 16,
+          "type": "normaltext",
+          "text": "Push-ups",
+          "allowsInlineEdition": true,
+          "typeOfTransformer": ["middle-left", "middle-right"],
+          "otherProps": {
+            "textColor": "#333333",
+            "fontVariant": "normal",
+            "fontStyle": "normal",
+            "textDecoration": "none",
+            "fontSize": 14,
+            "textAlignment": "left"
+          }
+        },
+        {
+          "id": "exercise-1-details",
+          "x": 85,
+          "y": 343,
+          "width": 150,
+          "height": 14,
+          "type": "smalltext",
+          "text": "3 sets x 15 reps",
+          "allowsInlineEdition": true,
+          "typeOfTransformer": ["middle-left", "middle-right"],
+          "otherProps": {
+            "textColor": "#999999",
+            "fontVariant": "normal",
+            "fontStyle": "normal",
+            "textDecoration": "none",
+            "fontSize": 11,
+            "textAlignment": "left"
+          }
+        },
+        {
+          "id": "exercise-item-2",
+          "x": 70,
+          "y": 375,
+          "width": 260,
+          "height": 50,
+          "type": "rectangle",
+          "allowsInlineEdition": false,
+          "typeOfTransformer": ["top-left", "top-center", "top-right", "middle-left", "middle-right", "bottom-left", "bottom-center", "bottom-right"],
+          "otherProps": {
+            "strokeColor": "#E0E0E0",
+            "backgroundColor": "#F5F5F5"
+          }
+        },
+        {
+          "id": "exercise-2-name",
+          "x": 85,
+          "y": 385,
+          "width": 100,
+          "height": 16,
+          "type": "normaltext",
+          "text": "Squats",
+          "allowsInlineEdition": true,
+          "typeOfTransformer": ["middle-left", "middle-right"],
+          "otherProps": {
+            "textColor": "#333333",
+            "fontVariant": "normal",
+            "fontStyle": "normal",
+            "textDecoration": "none",
+            "fontSize": 14,
+            "textAlignment": "left"
+          }
+        },
+        {
+          "id": "exercise-2-details",
+          "x": 85,
+          "y": 403,
+          "width": 150,
+          "height": 14,
+          "type": "smalltext",
+          "text": "3 sets x 20 reps",
+          "allowsInlineEdition": true,
+          "typeOfTransformer": ["middle-left", "middle-right"],
+          "otherProps": {
+            "textColor": "#999999",
+            "fontVariant": "normal",
+            "fontStyle": "normal",
+            "textDecoration": "none",
+            "fontSize": 11,
+            "textAlignment": "left"
+          }
+        },
+        {
+          "id": "empty-exercise-slot",
+          "x": 70,
+          "y": 435,
+          "width": 260,
+          "height": 40,
+          "type": "rectangle",
+          "allowsInlineEdition": false,
+          "typeOfTransformer": ["top-left", "top-center", "top-right", "middle-left", "middle-right", "bottom-left", "bottom-center", "bottom-right"],
+          "otherProps": {
+            "strokeColor": "#E0E0E0",
+            "backgroundColor": "#FFFFFF"
+          }
+        },
+        {
+          "id": "empty-slot-text",
+          "x": 150,
+          "y": 448,
+          "width": 100,
+          "height": 14,
+          "type": "smalltext",
+          "text": "+ Add Exercise",
+          "allowsInlineEdition": true,
+          "typeOfTransformer": ["middle-left", "middle-right"],
+          "otherProps": {
+            "textColor": "#999999",
+            "fontVariant": "normal",
+            "fontStyle": "normal",
+            "textDecoration": "none",
+            "fontSize": 12,
+            "textAlignment": "center"
+          }
+        },
+        {
+          "id": "save-button",
+          "x": 70,
+          "y": 500,
+          "width": 260,
+          "height": 45,
+          "type": "button",
+          "text": "Save Routine",
+          "allowsInlineEdition": true,
+          "typeOfTransformer": ["middle-left", "middle-right"],
+          "otherProps": {
+            "textColor": "#FFFFFF",
+            "backgroundColor": "#4CAF50"
+          }
+        }
+      ]
+    }
+  ],
+  "customColors": [null, null, null, null, null, null, null, null],
+  "size": {
+    "width": 400,
+    "height": 650
+  }
+}

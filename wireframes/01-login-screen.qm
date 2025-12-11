@@ -1,0 +1,207 @@
+{
+  "version": "0.2",
+  "pages": [
+    {
+      "id": "login-page",
+      "name": "Login Screen",
+      "shapes": [
+        {
+          "id": "phone-frame",
+          "x": 50,
+          "y": 20,
+          "width": 300,
+          "height": 560,
+          "type": "mobilePhone",
+          "allowsInlineEdition": false,
+          "typeOfTransformer": ["top-left", "top-center", "top-right", "middle-left", "middle-right", "bottom-left", "bottom-center", "bottom-right"]
+        },
+        {
+          "id": "app-logo",
+          "x": 150,
+          "y": 80,
+          "width": 100,
+          "height": 60,
+          "type": "rectangleLow",
+          "allowsInlineEdition": false,
+          "typeOfTransformer": ["middle-left", "middle-right"]
+        },
+        {
+          "id": "app-title",
+          "x": 130,
+          "y": 150,
+          "width": 140,
+          "height": 30,
+          "type": "heading1",
+          "text": "FitLife",
+          "allowsInlineEdition": true,
+          "typeOfTransformer": ["middle-left", "middle-right"],
+          "otherProps": {
+            "textColor": "#000000",
+            "fontVariant": "bold",
+            "fontStyle": "normal",
+            "textDecoration": "none",
+            "fontSize": 28,
+            "textAlignment": "center"
+          }
+        },
+        {
+          "id": "subtitle",
+          "x": 100,
+          "y": 185,
+          "width": 200,
+          "height": 20,
+          "type": "smalltext",
+          "text": "Your Fitness Companion",
+          "allowsInlineEdition": true,
+          "typeOfTransformer": ["middle-left", "middle-right"],
+          "otherProps": {
+            "textColor": "#666666",
+            "fontVariant": "normal",
+            "fontStyle": "normal",
+            "textDecoration": "none",
+            "fontSize": 14,
+            "textAlignment": "center"
+          }
+        },
+        {
+          "id": "email-label",
+          "x": 80,
+          "y": 240,
+          "width": 50,
+          "height": 18,
+          "type": "smalltext",
+          "text": "Email",
+          "allowsInlineEdition": true,
+          "typeOfTransformer": ["middle-left", "middle-right"],
+          "otherProps": {
+            "textColor": "#333333",
+            "fontVariant": "normal",
+            "fontStyle": "normal",
+            "textDecoration": "none",
+            "fontSize": 12,
+            "textAlignment": "left"
+          }
+        },
+        {
+          "id": "email-input",
+          "x": 80,
+          "y": 260,
+          "width": 240,
+          "height": 40,
+          "type": "input",
+          "text": "Enter your email",
+          "allowsInlineEdition": true,
+          "typeOfTransformer": ["middle-left", "middle-right"],
+          "otherProps": {
+            "textColor": "#999999",
+            "isPlaceholder": true,
+            "isPassword": false
+          }
+        },
+        {
+          "id": "password-label",
+          "x": 80,
+          "y": 315,
+          "width": 70,
+          "height": 18,
+          "type": "smalltext",
+          "text": "Password",
+          "allowsInlineEdition": true,
+          "typeOfTransformer": ["middle-left", "middle-right"],
+          "otherProps": {
+            "textColor": "#333333",
+            "fontVariant": "normal",
+            "fontStyle": "normal",
+            "textDecoration": "none",
+            "fontSize": 12,
+            "textAlignment": "left"
+          }
+        },
+        {
+          "id": "password-input",
+          "x": 80,
+          "y": 335,
+          "width": 240,
+          "height": 40,
+          "type": "input",
+          "text": "Enter your password",
+          "allowsInlineEdition": true,
+          "typeOfTransformer": ["middle-left", "middle-right"],
+          "otherProps": {
+            "textColor": "#999999",
+            "isPlaceholder": true,
+            "isPassword": true
+          }
+        },
+        {
+          "id": "login-button",
+          "x": 80,
+          "y": 400,
+          "width": 240,
+          "height": 45,
+          "type": "button",
+          "text": "Login",
+          "allowsInlineEdition": true,
+          "typeOfTransformer": ["middle-left", "middle-right"],
+          "otherProps": {
+            "textColor": "#FFFFFF",
+            "backgroundColor": "#4CAF50"
+          }
+        },
+        {
+          "id": "divider-line",
+          "x": 80,
+          "y": 465,
+          "width": 240,
+          "height": 2,
+          "type": "horizontalLineLow",
+          "allowsInlineEdition": false,
+          "typeOfTransformer": ["middle-left", "middle-right"]
+        },
+        {
+          "id": "register-text",
+          "x": 100,
+          "y": 485,
+          "width": 200,
+          "height": 20,
+          "type": "smalltext",
+          "text": "Don't have an account?",
+          "allowsInlineEdition": true,
+          "typeOfTransformer": ["middle-left", "middle-right"],
+          "otherProps": {
+            "textColor": "#666666",
+            "fontVariant": "normal",
+            "fontStyle": "normal",
+            "textDecoration": "none",
+            "fontSize": 12,
+            "textAlignment": "center"
+          }
+        },
+        {
+          "id": "register-link",
+          "x": 150,
+          "y": 510,
+          "width": 100,
+          "height": 25,
+          "type": "link",
+          "text": "Register",
+          "allowsInlineEdition": true,
+          "typeOfTransformer": ["middle-left", "middle-right"],
+          "otherProps": {
+            "textColor": "#2196F3",
+            "fontVariant": "normal",
+            "fontStyle": "normal",
+            "textDecoration": "underline",
+            "fontSize": 14,
+            "textAlignment": "center"
+          }
+        }
+      ]
+    }
+  ],
+  "customColors": [null, null, null, null, null, null, null, null],
+  "size": {
+    "width": 400,
+    "height": 600
+  }
+}

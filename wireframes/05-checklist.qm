@@ -1,0 +1,410 @@
+{
+  "version": "0.2",
+  "pages": [
+    {
+      "id": "checklist-page",
+      "name": "Equipment Checklist Screen",
+      "shapes": [
+        {
+          "id": "phone-frame",
+          "x": 50,
+          "y": 30,
+          "width": 300,
+          "height": 560,
+          "type": "mobilePhone",
+          "allowsInlineEdition": false,
+          "typeOfTransformer": ["top-left", "top-center", "top-right", "middle-left", "middle-right", "bottom-left", "bottom-center", "bottom-right"]
+        },
+        {
+          "id": "screen-title",
+          "x": 130,
+          "y": 83,
+          "width": 140,
+          "height": 22,
+          "type": "heading2",
+          "text": "Equipment Checklist",
+          "allowsInlineEdition": true,
+          "typeOfTransformer": ["middle-left", "middle-right"],
+          "otherProps": {
+            "textColor": "#333333",
+            "fontVariant": "bold",
+            "fontStyle": "normal",
+            "textDecoration": "none",
+            "fontSize": 16,
+            "textAlignment": "center"
+          }
+        },
+        {
+          "id": "share-btn",
+          "x": 290,
+          "y": 83,
+          "width": 35,
+          "height": 25,
+          "type": "smalltext",
+          "text": "SMS",
+          "allowsInlineEdition": true,
+          "typeOfTransformer": ["middle-left", "middle-right"],
+          "otherProps": {
+            "textColor": "#4CAF50",
+            "fontVariant": "bold",
+            "fontStyle": "normal",
+            "textDecoration": "none",
+            "fontSize": 11,
+            "textAlignment": "center"
+          }
+        },
+        {
+          "id": "category-1-label",
+          "x": 80,
+          "y": 115,
+          "width": 120,
+          "height": 18,
+          "type": "heading3",
+          "text": "Cardio Equipment",
+          "allowsInlineEdition": true,
+          "typeOfTransformer": ["middle-left", "middle-right"],
+          "otherProps": {
+            "textColor": "#4CAF50",
+            "fontVariant": "bold",
+            "fontStyle": "normal",
+            "textDecoration": "none",
+            "fontSize": 14,
+            "textAlignment": "left"
+          }
+        },
+        {
+          "id": "item-1-checkbox",
+          "x": 80,
+          "y": 145,
+          "width": 20,
+          "height": 20,
+          "type": "rectangleLow",
+          "allowsInlineEdition": false,
+          "typeOfTransformer": ["middle-left", "middle-right"]
+        },
+        {
+          "id": "item-1-check",
+          "x": 70,
+          "y": 146,
+          "width": 14,
+          "height": 14,
+          "type": "smalltext",
+          "text": "X",
+          "allowsInlineEdition": true,
+          "typeOfTransformer": ["middle-left", "middle-right"],
+          "otherProps": {
+            "textColor": "#4CAF50",
+            "fontVariant": "bold",
+            "fontStyle": "normal",
+            "textDecoration": "none",
+            "fontSize": 12,
+            "textAlignment": "center"
+          }
+        },
+        {
+          "id": "item-1-text",
+          "x": 110,
+          "y": 148,
+          "width": 150,
+          "height": 16,
+          "type": "normaltext",
+          "text": "Jump Rope",
+          "allowsInlineEdition": true,
+          "typeOfTransformer": ["middle-left", "middle-right"],
+          "otherProps": {
+            "textColor": "#333333",
+            "fontVariant": "normal",
+            "fontStyle": "normal",
+            "textDecoration": "none",
+            "fontSize": 14,
+            "textAlignment": "left"
+          }
+        },
+        {
+          "id": "item-2-checkbox",
+          "x": 80,
+          "y": 175,
+          "width": 20,
+          "height": 20,
+          "type": "rectangleLow",
+          "allowsInlineEdition": false,
+          "typeOfTransformer": ["middle-left", "middle-right"]
+        },
+        {
+          "id": "item-2-text",
+          "x": 110,
+          "y": 178,
+          "width": 150,
+          "height": 16,
+          "type": "normaltext",
+          "text": "Running Shoes",
+          "allowsInlineEdition": true,
+          "typeOfTransformer": ["middle-left", "middle-right"],
+          "otherProps": {
+            "textColor": "#333333",
+            "fontVariant": "normal",
+            "fontStyle": "normal",
+            "textDecoration": "none",
+            "fontSize": 14,
+            "textAlignment": "left"
+          }
+        },
+        {
+          "id": "item-3-checkbox",
+          "x": 80,
+          "y": 205,
+          "width": 20,
+          "height": 20,
+          "type": "rectangleLow",
+          "allowsInlineEdition": false,
+          "typeOfTransformer": ["middle-left", "middle-right"]
+        },
+        {
+          "id": "item-3-check",
+          "x": 70,
+          "y": 206,
+          "width": 14,
+          "height": 14,
+          "type": "smalltext",
+          "text": "X",
+          "allowsInlineEdition": true,
+          "typeOfTransformer": ["middle-left", "middle-right"],
+          "otherProps": {
+            "textColor": "#4CAF50",
+            "fontVariant": "bold",
+            "fontStyle": "normal",
+            "textDecoration": "none",
+            "fontSize": 12,
+            "textAlignment": "center"
+          }
+        },
+        {
+          "id": "item-3-text",
+          "x": 110,
+          "y": 208,
+          "width": 150,
+          "height": 16,
+          "type": "normaltext",
+          "text": "Resistance Bands",
+          "allowsInlineEdition": true,
+          "typeOfTransformer": ["middle-left", "middle-right"],
+          "otherProps": {
+            "textColor": "#333333",
+            "fontVariant": "normal",
+            "fontStyle": "normal",
+            "textDecoration": "none",
+            "fontSize": 14,
+            "textAlignment": "left"
+          }
+        },
+        {
+          "id": "category-2-label",
+          "x": 80,
+          "y": 250,
+          "width": 140,
+          "height": 18,
+          "type": "heading3",
+          "text": "Strength Equipment",
+          "allowsInlineEdition": true,
+          "typeOfTransformer": ["middle-left", "middle-right"],
+          "otherProps": {
+            "textColor": "#2196F3",
+            "fontVariant": "bold",
+            "fontStyle": "normal",
+            "textDecoration": "none",
+            "fontSize": 14,
+            "textAlignment": "left"
+          }
+        },
+        {
+          "id": "item-4-checkbox",
+          "x": 80,
+          "y": 280,
+          "width": 20,
+          "height": 20,
+          "type": "rectangleLow",
+          "allowsInlineEdition": false,
+          "typeOfTransformer": ["middle-left", "middle-right"]
+        },
+        {
+          "id": "item-4-text",
+          "x": 110,
+          "y": 283,
+          "width": 150,
+          "height": 16,
+          "type": "normaltext",
+          "text": "Dumbbells (5kg)",
+          "allowsInlineEdition": true,
+          "typeOfTransformer": ["middle-left", "middle-right"],
+          "otherProps": {
+            "textColor": "#333333",
+            "fontVariant": "normal",
+            "fontStyle": "normal",
+            "textDecoration": "none",
+            "fontSize": 14,
+            "textAlignment": "left"
+          }
+        },
+        {
+          "id": "item-5-checkbox",
+          "x": 80,
+          "y": 310,
+          "width": 20,
+          "height": 20,
+          "type": "rectangleLow",
+          "allowsInlineEdition": false,
+          "typeOfTransformer": ["middle-left", "middle-right"]
+        },
+        {
+          "id": "item-5-check",
+          "x": 70,
+          "y": 310,
+          "width": 14,
+          "height": 14,
+          "type": "smalltext",
+          "text": "X",
+          "allowsInlineEdition": true,
+          "typeOfTransformer": ["middle-left", "middle-right"],
+          "otherProps": {
+            "textColor": "#4CAF50",
+            "fontVariant": "bold",
+            "fontStyle": "normal",
+            "textDecoration": "none",
+            "fontSize": 12,
+            "textAlignment": "center"
+          }
+        },
+        {
+          "id": "item-5-text",
+          "x": 110,
+          "y": 313,
+          "width": 150,
+          "height": 16,
+          "type": "normaltext",
+          "text": "Yoga Mat",
+          "allowsInlineEdition": true,
+          "typeOfTransformer": ["middle-left", "middle-right"],
+          "otherProps": {
+            "textColor": "#333333",
+            "fontVariant": "normal",
+            "fontStyle": "normal",
+            "textDecoration": "none",
+            "fontSize": 14,
+            "textAlignment": "left"
+          }
+        },
+        {
+          "id": "item-6-checkbox",
+          "x": 80,
+          "y": 340,
+          "width": 20,
+          "height": 20,
+          "type": "rectangleLow",
+          "allowsInlineEdition": false,
+          "typeOfTransformer": ["middle-left", "middle-right"]
+        },
+        {
+          "id": "item-6-text",
+          "x": 110,
+          "y": 343,
+          "width": 150,
+          "height": 16,
+          "type": "normaltext",
+          "text": "Kettlebell (10kg)",
+          "allowsInlineEdition": true,
+          "typeOfTransformer": ["middle-left", "middle-right"],
+          "otherProps": {
+            "textColor": "#333333",
+            "fontVariant": "normal",
+            "fontStyle": "normal",
+            "textDecoration": "none",
+            "fontSize": 14,
+            "textAlignment": "left"
+          }
+        },
+        {
+          "id": "add-item-btn",
+          "x": 70,
+          "y": 385,
+          "width": 260,
+          "height": 40,
+          "type": "button",
+          "text": "+ Add Equipment",
+          "allowsInlineEdition": true,
+          "typeOfTransformer": ["middle-left", "middle-right"],
+          "otherProps": {
+            "textColor": "#4CAF50",
+            "backgroundColor": "#E8F5E9"
+          }
+        },
+        {
+          "id": "progress-label",
+          "x": 80,
+          "y": 445,
+          "width": 100,
+          "height": 16,
+          "type": "smalltext",
+          "text": "Progress: 4/6 items",
+          "allowsInlineEdition": true,
+          "typeOfTransformer": ["middle-left", "middle-right"],
+          "otherProps": {
+            "textColor": "#666666",
+            "fontVariant": "normal",
+            "fontStyle": "normal",
+            "textDecoration": "none",
+            "fontSize": 12,
+            "textAlignment": "left"
+          }
+        },
+        {
+          "id": "progress-bar-bg",
+          "x": 70,
+          "y": 470,
+          "width": 260,
+          "height": 8,
+          "type": "rectangle",
+          "allowsInlineEdition": false,
+          "typeOfTransformer": ["top-left", "top-center", "top-right", "middle-left", "middle-right", "bottom-left", "bottom-center", "bottom-right"],
+          "otherProps": {
+            "strokeColor": "#E0E0E0",
+            "backgroundColor": "#E0E0E0"
+          }
+        },
+        {
+          "id": "progress-bar-fill",
+          "x": 70,
+          "y": 470,
+          "width": 173,
+          "height": 8,
+          "type": "rectangle",
+          "allowsInlineEdition": false,
+          "typeOfTransformer": ["top-left", "top-center", "top-right", "middle-left", "middle-right", "bottom-left", "bottom-center", "bottom-right"],
+          "otherProps": {
+            "strokeColor": "#4CAF50",
+            "backgroundColor": "#4CAF50"
+          }
+        },
+        {
+          "id": "share-sms-button",
+          "x": 70,
+          "y": 500,
+          "width": 260,
+          "height": 45,
+          "type": "button",
+          "text": "Share via SMS",
+          "allowsInlineEdition": true,
+          "typeOfTransformer": ["middle-left", "middle-right"],
+          "otherProps": {
+            "textColor": "#FFFFFF",
+            "backgroundColor": "#4CAF50"
+          }
+        }
+      ]
+    }
+  ],
+  "customColors": [null, null, null, null, null, null, null, null],
+  "size": {
+    "width": 400,
+    "height": 630
+  }
+}

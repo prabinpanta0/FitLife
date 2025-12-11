@@ -1,0 +1,333 @@
+{
+  "version": "0.2",
+  "pages": [
+    {
+      "id": "map-page",
+      "name": "Gym Locations Map Screen",
+      "shapes": [
+        {
+          "id": "phone-frame",
+          "x": 50,
+          "y": 70,
+          "width": 300,
+          "height": 560,
+          "type": "mobilePhone",
+          "allowsInlineEdition": false,
+          "typeOfTransformer": ["top-left", "top-center", "top-right", "middle-left", "middle-right", "bottom-left", "bottom-center", "bottom-right"]
+        },
+        {
+          "id": "screen-title",
+          "x": 140,
+          "y": 76,
+          "width": 120,
+          "height": 22,
+          "type": "heading2",
+          "text": "Gym Locations",
+          "allowsInlineEdition": true,
+          "typeOfTransformer": ["middle-left", "middle-right"],
+          "otherProps": {
+            "textColor": "#333333",
+            "fontVariant": "bold",
+            "fontStyle": "normal",
+            "textDecoration": "none",
+            "fontSize": 16,
+            "textAlignment": "center"
+          }
+        },
+        {
+          "id": "search-icon",
+          "x": 295,
+          "y": 76,
+          "width": 25,
+          "height": 20,
+          "type": "circleLow",
+          "allowsInlineEdition": false,
+          "typeOfTransformer": ["middle-left", "middle-right"]
+        },
+        {
+          "id": "map-area",
+          "x": 70,
+          "y": 105,
+          "width": 260,
+          "height": 320,
+          "type": "rectangle",
+          "allowsInlineEdition": false,
+          "typeOfTransformer": ["top-left", "top-center", "top-right", "middle-left", "middle-right", "bottom-left", "bottom-center", "bottom-right"],
+          "otherProps": {
+            "strokeColor": "#E0E0E0",
+            "backgroundColor": "#E8F5E9"
+          }
+        },
+        {
+          "id": "map-label",
+          "x": 165,
+          "y": 240,
+          "width": 70,
+          "height": 20,
+          "type": "smalltext",
+          "text": "Map View",
+          "allowsInlineEdition": true,
+          "typeOfTransformer": ["middle-left", "middle-right"],
+          "otherProps": {
+            "textColor": "#999999",
+            "fontVariant": "normal",
+            "fontStyle": "normal",
+            "textDecoration": "none",
+            "fontSize": 14,
+            "textAlignment": "center"
+          }
+        },
+        {
+          "id": "marker-1",
+          "x": 120,
+          "y": 180,
+          "width": 20,
+          "height": 25,
+          "type": "triangleLow",
+          "allowsInlineEdition": false,
+          "typeOfTransformer": ["middle-left", "middle-right"]
+        },
+        {
+          "id": "marker-2",
+          "x": 230,
+          "y": 220,
+          "width": 20,
+          "height": 25,
+          "type": "triangleLow",
+          "allowsInlineEdition": false,
+          "typeOfTransformer": ["middle-left", "middle-right"]
+        },
+        {
+          "id": "marker-3",
+          "x": 180,
+          "y": 320,
+          "width": 20,
+          "height": 25,
+          "type": "triangleLow",
+          "allowsInlineEdition": false,
+          "typeOfTransformer": ["middle-left", "middle-right"]
+        },
+        {
+          "id": "current-location",
+          "x": 190,
+          "y": 260,
+          "width": 20,
+          "height": 20,
+          "type": "circleLow",
+          "allowsInlineEdition": false,
+          "typeOfTransformer": ["middle-left", "middle-right"]
+        },
+        {
+          "id": "location-card",
+          "x": 70,
+          "y": 428,
+          "width": 260,
+          "height": 90,
+          "type": "rectangle",
+          "allowsInlineEdition": false,
+          "typeOfTransformer": ["top-left", "top-center", "top-right", "middle-left", "middle-right", "bottom-left", "bottom-center", "bottom-right"],
+          "otherProps": {
+            "strokeColor": "#E0E0E0",
+            "backgroundColor": "#FFFFFF"
+          }
+        },
+        {
+          "id": "location-name",
+          "x": 75,
+          "y": 438,
+          "width": 180,
+          "height": 20,
+          "type": "heading3",
+          "text": "FitLife Gym Downtown",
+          "allowsInlineEdition": true,
+          "typeOfTransformer": ["middle-left", "middle-right"],
+          "otherProps": {
+            "textColor": "#333333",
+            "fontVariant": "bold",
+            "fontStyle": "normal",
+            "textDecoration": "none",
+            "fontSize": 14,
+            "textAlignment": "left"
+          }
+        },
+        {
+          "id": "location-address",
+          "x": 75,
+          "y": 460,
+          "width": 200,
+          "height": 16,
+          "type": "smalltext",
+          "text": "123 Main Street, Downtown",
+          "allowsInlineEdition": true,
+          "typeOfTransformer": ["middle-left", "middle-right"],
+          "otherProps": {
+            "textColor": "#666666",
+            "fontVariant": "normal",
+            "fontStyle": "normal",
+            "textDecoration": "none",
+            "fontSize": 12,
+            "textAlignment": "left"
+          }
+        },
+        {
+          "id": "location-distance",
+          "x": 75,
+          "y": 480,
+          "width": 100,
+          "height": 14,
+          "type": "smalltext",
+          "text": "0.5 km away",
+          "allowsInlineEdition": true,
+          "typeOfTransformer": ["middle-left", "middle-right"],
+          "otherProps": {
+            "textColor": "#4CAF50",
+            "fontVariant": "bold",
+            "fontStyle": "normal",
+            "textDecoration": "none",
+            "fontSize": 11,
+            "textAlignment": "left"
+          }
+        },
+        {
+          "id": "directions-btn",
+          "x": 250,
+          "y": 455,
+          "width": 70,
+          "height": 35,
+          "type": "button",
+          "text": "Go",
+          "allowsInlineEdition": true,
+          "typeOfTransformer": ["middle-left", "middle-right"],
+          "otherProps": {
+            "textColor": "#FFFFFF",
+            "backgroundColor": "#4CAF50"
+          }
+        },
+        {
+          "id": "add-location-btn",
+          "x": 265,
+          "y": 370,
+          "width": 50,
+          "height": 45,
+          "type": "circleLow",
+          "allowsInlineEdition": false,
+          "typeOfTransformer": ["middle-left", "middle-right"]
+        },
+        {
+          "id": "add-icon",
+          "x": 278,
+          "y": 385,
+          "width": 25,
+          "height": 20,
+          "type": "smalltext",
+          "text": "+",
+          "allowsInlineEdition": true,
+          "typeOfTransformer": ["middle-left", "middle-right"],
+          "otherProps": {
+            "textColor": "#FFFFFF",
+            "fontVariant": "bold",
+            "fontStyle": "normal",
+            "textDecoration": "none",
+            "fontSize": 22,
+            "textAlignment": "center"
+          }
+        },
+        {
+          "id": "bottom-nav",
+          "x": 70,
+          "y": 530,
+          "width": 260,
+          "height": 55,
+          "type": "rectangle",
+          "allowsInlineEdition": false,
+          "typeOfTransformer": ["top-left", "top-center", "top-right", "middle-left", "middle-right", "bottom-left", "bottom-center", "bottom-right"],
+          "otherProps": {
+            "strokeColor": "#E0E0E0",
+            "backgroundColor": "#FFFFFF"
+          }
+        },
+        {
+          "id": "nav-home",
+          "x": 80,
+          "y": 545,
+          "width": 40,
+          "height": 12,
+          "type": "smalltext",
+          "text": "Home",
+          "allowsInlineEdition": true,
+          "typeOfTransformer": ["middle-left", "middle-right"],
+          "otherProps": {
+            "textColor": "#999999",
+            "fontVariant": "normal",
+            "fontStyle": "normal",
+            "textDecoration": "none",
+            "fontSize": 10,
+            "textAlignment": "center"
+          }
+        },
+        {
+          "id": "nav-routines",
+          "x": 140,
+          "y": 545,
+          "width": 50,
+          "height": 12,
+          "type": "smalltext",
+          "text": "Routines",
+          "allowsInlineEdition": true,
+          "typeOfTransformer": ["middle-left", "middle-right"],
+          "otherProps": {
+            "textColor": "#999999",
+            "fontVariant": "normal",
+            "fontStyle": "normal",
+            "textDecoration": "none",
+            "fontSize": 10,
+            "textAlignment": "center"
+          }
+        },
+        {
+          "id": "nav-checklist",
+          "x": 205,
+          "y": 545,
+          "width": 50,
+          "height": 12,
+          "type": "smalltext",
+          "text": "Checklist",
+          "allowsInlineEdition": true,
+          "typeOfTransformer": ["middle-left", "middle-right"],
+          "otherProps": {
+            "textColor": "#999999",
+            "fontVariant": "normal",
+            "fontStyle": "normal",
+            "textDecoration": "none",
+            "fontSize": 10,
+            "textAlignment": "center"
+          }
+        },
+        {
+          "id": "nav-map",
+          "x": 270,
+          "y": 545,
+          "width": 30,
+          "height": 12,
+          "type": "smalltext",
+          "text": "Map",
+          "allowsInlineEdition": true,
+          "typeOfTransformer": ["middle-left", "middle-right"],
+          "otherProps": {
+            "textColor": "#4CAF50",
+            "fontVariant": "bold",
+            "fontStyle": "normal",
+            "textDecoration": "none",
+            "fontSize": 10,
+            "textAlignment": "center"
+          }
+        }
+      ]
+    }
+  ],
+  "customColors": [null, null, null, null, null, null, null, null],
+  "size": {
+    "width": 400,
+    "height": 650
+  }
+}
