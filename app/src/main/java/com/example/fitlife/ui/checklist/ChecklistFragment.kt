@@ -457,21 +457,27 @@ class ChecklistFragment : Fragment() {
         builder.appendLine("=".repeat(30))
         builder.appendLine()
 
-        val groupedEquipment = allEquipment.groupBy { it.category }
+        // Only include checked items
+        val checkedEquipment = allEquipment.filter { checkedItems.contains(it.id) }
+        
+        if (checkedEquipment.isEmpty()) {
+            builder.appendLine("No items checked yet.")
+        } else {
+            val groupedEquipment = checkedEquipment.groupBy { it.category }
 
-        for ((category, items) in groupedEquipment) {
-            val categoryName = category.displayName
+            for ((category, items) in groupedEquipment) {
+                val categoryName = category.displayName
 
-            builder.appendLine("${getCategoryEmoji(category)} $categoryName")
-            for (item in items) {
-                val checkbox = if (checkedItems.contains(item.id)) "✅" else "⬜"
-                builder.appendLine("  $checkbox ${item.name}")
+                builder.appendLine("${getCategoryEmoji(category)} $categoryName")
+                for (item in items) {
+                    builder.appendLine("  ✅ ${item.name}")
+                }
+                builder.appendLine()
             }
-            builder.appendLine()
         }
 
         val checkedCount = checkedItems.count { id -> allEquipment.any { it.id == id } }
-        builder.appendLine("Progress: $checkedCount/${allEquipment.size} items")
+        builder.appendLine("Ready: $checkedCount/${allEquipment.size} items")
         builder.appendLine()
         builder.appendLine("Sent from FitLife App")
 

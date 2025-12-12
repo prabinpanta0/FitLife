@@ -3,6 +3,7 @@ package com.example.fitlife.ui.map
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.location.Geocoder
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -14,6 +15,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import java.util.Locale
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
@@ -333,6 +335,29 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         val etLocationName = dialogView.findViewById<TextInputEditText>(R.id.etLocationName)
         val etAddress = dialogView.findViewById<TextInputEditText>(R.id.etAddress)
         val spinnerType = dialogView.findViewById<MaterialAutoCompleteTextView>(R.id.spinnerLocationType)
+
+        // Reverse geocode to get address from coordinates
+        try {
+            val geocoder = Geocoder(requireContext(), Locale.getDefault())
+            @Suppress("DEPRECATION")
+            val addresses = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1)
+            if (!addresses.isNullOrEmpty()) {
+                val address = addresses[0]
+                // Set a suggested name from the locality or feature name
+                val suggestedName = address.featureName ?: address.locality ?: address.subLocality ?: ""
+                if (suggestedName.isNotEmpty() && !suggestedName.matches(Regex("\\d+"))) {
+                    etLocationName.setText(suggestedName)
+                }
+                // Build full address string
+                val fullAddress = buildString {
+                    address.getAddressLine(0)?.let { append(it) }
+                }
+                etAddress.setText(fullAddress)
+            }
+        } catch (e: Exception) {
+            // Geocoding failed, leave fields empty for manual entry
+            e.printStackTrace()
+        }
 
         // Setup location type dropdown
         val locationTypes = LocationType.values().map { getLocationTypeDisplay(it) }
