@@ -1,6 +1,12 @@
 # FitLife
 
+<div style="display: flex; align-items: center;">
+<img src="app/src/main/play_store_512.png" height="160px" style="margin-right: 20px;">
+  
+<div style="text-align: justify; text-justify: inter-word;">
 A modern fitness tracking application built with Kotlin for Android. Features workout routine management, equipment checklists with SMS delegation, and gym location geotagging.
+</div>
+</div>
 
 ## Features
 
