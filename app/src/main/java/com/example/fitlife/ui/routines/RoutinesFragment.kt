@@ -106,7 +106,10 @@ class RoutinesFragment : Fragment() {
         lifecycleScope.launch {
             app.workoutRepository.getRoutinesWithExercises(userId).collect { routines ->
                 allRoutines = routines
-                filterRoutines()
+                // Check if view is still available before accessing binding
+                if (_binding != null) {
+                    filterRoutines()
+                }
             }
         }
     }
@@ -114,7 +117,7 @@ class RoutinesFragment : Fragment() {
     private fun filterRoutines() {
         val filteredRoutines = when (selectedDayFilter) {
             -2 -> allRoutines // All
-            else -> allRoutines.filter { it.routine.dayOfWeek == selectedDayFilter }
+            else -> allRoutines.filter { it.routine.containsDay(selectedDayFilter) }
         }
 
         routineAdapter.submitList(filteredRoutines)

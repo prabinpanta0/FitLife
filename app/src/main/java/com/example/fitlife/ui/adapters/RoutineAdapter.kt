@@ -44,9 +44,10 @@ class RoutineAdapter(
                 tvRoutineName.text = routine.name
                 tvExerciseCount.text = root.context.getString(R.string.exercises_count_format, exercises.size)
 
-                // Day indicator
-                if (routine.dayOfWeek >= 0) {
-                    tvDayIndicator.text = DateUtils.getShortDayName(routine.dayOfWeek)
+                // Day indicator - show multiple days if available
+                val days = routine.getDaysAsList()
+                if (days.isNotEmpty()) {
+                    tvDayIndicator.text = DateUtils.getMultipleDaysShort(days)
                     tvDayIndicator.visibility = View.VISIBLE
                 } else {
                     tvDayIndicator.text = root.context.getString(R.string.day_indicator_none)

@@ -332,4 +332,5 @@
     <!-- Accessibility strings -->
     <string name="toggle_notifications">Toggle notifications on or off</string>
     <string name="toggle_dark_mode">Toggle dark mode on or off</string>
+    <string name="Dev">Idleshade@Quanta</string>
 </resources>

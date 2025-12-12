@@ -49,7 +49,7 @@ class AddRoutineFragment : Fragment() {
     private lateinit var exerciseAdapter: ExerciseAdapter
 
     private var routineId: Long = -1
-    private var selectedDayOfWeek: Int = -1
+    private var selectedDaysOfWeek = mutableSetOf<Int>() // Changed to support multiple days
     private var selectedLocationId: Long? = null
     private var exercises = mutableListOf<Exercise>()
     private var exerciseEquipment = mutableMapOf<Int, MutableList<String>>() // temp index -> equipment names
@@ -300,9 +300,9 @@ class AddRoutineFragment : Fragment() {
         chips.forEach { (chip, dayValue) ->
             chip.setOnCheckedChangeListener { _, isChecked ->
                 if (isChecked) {
-                    selectedDayOfWeek = dayValue
-                } else if (selectedDayOfWeek == dayValue) {
-                    selectedDayOfWeek = -1
+                    selectedDaysOfWeek.add(dayValue)
+                } else {
+                    selectedDaysOfWeek.remove(dayValue)
                 }
             }
         }
@@ -343,6 +343,11 @@ class AddRoutineFragment : Fragment() {
                     locationNames
                 )
                 binding.actvLocation.setAdapter(adapter)
+                
+                // Update dropdown display if editing an existing routine
+                if (routineId != -1L && selectedLocationId != null) {
+                    updateLocationDropdown()
+                }
             }
         }
     }
@@ -357,12 +362,16 @@ class AddRoutineFragment : Fragment() {
                 binding.etRoutineName.setText(data.routine.name)
                 binding.etDescription.setText(data.routine.description)
 
-                // Set day chip
-                selectedDayOfWeek = data.routine.dayOfWeek
-                setDayChipChecked(data.routine.dayOfWeek)
+                // Set day chips (supports multiple days)
+                selectedDaysOfWeek.clear()
+                selectedDaysOfWeek.addAll(data.routine.getDaysAsList())
+                setDayChipsChecked(data.routine.getDaysAsList())
 
-                // Set location
+                // Set location and display it in the dropdown
                 selectedLocationId = data.routine.locationId
+                if (selectedLocationId != null && locations.isNotEmpty()) {
+                    updateLocationDropdown()
+                }
 
                 // Load exercises
                 exercises.clear()
@@ -372,16 +381,25 @@ class AddRoutineFragment : Fragment() {
         }
     }
 
-    private fun setDayChipChecked(dayOfWeek: Int) {
-        when (dayOfWeek) {
-            0 -> binding.chipSun.isChecked = true
-            1 -> binding.chipMon.isChecked = true
-            2 -> binding.chipTue.isChecked = true
-            3 -> binding.chipWed.isChecked = true
-            4 -> binding.chipThu.isChecked = true
-            5 -> binding.chipFri.isChecked = true
-            6 -> binding.chipSat.isChecked = true
+    private fun updateLocationDropdown() {
+        selectedLocationId?.let { locId ->
+            val location = locations.find { it.id == locId }
+            location?.let {
+                binding.actvLocation.setText("${it.locationType.emoji} ${it.name}", false)
+            }
+        } ?: run {
+            binding.actvLocation.setText("None", false)
         }
+    }
+
+    private fun setDayChipsChecked(daysOfWeek: List<Int>) {
+        binding.chipSun.isChecked = daysOfWeek.contains(0)
+        binding.chipMon.isChecked = daysOfWeek.contains(1)
+        binding.chipTue.isChecked = daysOfWeek.contains(2)
+        binding.chipWed.isChecked = daysOfWeek.contains(3)
+        binding.chipThu.isChecked = daysOfWeek.contains(4)
+        binding.chipFri.isChecked = daysOfWeek.contains(5)
+        binding.chipSat.isChecked = daysOfWeek.contains(6)
     }
 
     private fun showAddExerciseDialog() {
@@ -666,12 +684,18 @@ class AddRoutineFragment : Fragment() {
 
         lifecycleScope.launch {
             try {
+                // Convert selected days set to sorted list for storage
+                val daysOfWeekString = WorkoutRoutine.daysListToString(selectedDaysOfWeek.toList())
+                // Use first selected day for backward compatibility, or -1 if none selected
+                val primaryDay = selectedDaysOfWeek.minOrNull() ?: -1
+                
                 val routine = WorkoutRoutine(
                     id = if (routineId != -1L) routineId else 0,
                     userId = userId,
                     name = name,
                     description = description,
-                    dayOfWeek = selectedDayOfWeek,
+                    dayOfWeek = primaryDay,
+                    daysOfWeek = daysOfWeekString,
                     locationId = selectedLocationId,
                     updatedAt = System.currentTimeMillis()
                 )

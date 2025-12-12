@@ -151,7 +151,12 @@ class LoginFragment : Fragment() {
     }
 
     private fun navigateToHome() {
-        findNavController().navigate(R.id.action_LoginFragment_to_HomeFragment)
+        // Only navigate if we're currently at LoginFragment to avoid crash
+        // when navigation state is already at HomeFragment
+        val navController = findNavController()
+        if (navController.currentDestination?.id == R.id.LoginFragment) {
+            navController.navigate(R.id.action_LoginFragment_to_HomeFragment)
+        }
     }
 
     override fun onDestroyView() {

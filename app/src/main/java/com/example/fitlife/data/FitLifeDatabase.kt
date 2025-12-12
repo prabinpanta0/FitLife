@@ -17,7 +17,7 @@ import com.example.fitlife.data.model.*
         Equipment::class,
         GeoLocation::class
     ],
-    version = 2,
+    version = 3,
     exportSchema = false
 )
 abstract class FitLifeDatabase : RoomDatabase() {
@@ -48,6 +48,17 @@ abstract class FitLifeDatabase : RoomDatabase() {
             }
         }
 
+        /**
+         * Migration from version 2 to 3:
+         * - Adds daysOfWeek (TEXT) to workout_routines table for multi-day support
+         */
+        private val MIGRATION_2_3 = object : Migration(2, 3) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                // Add daysOfWeek column to workout_routines table
+                database.execSQL("ALTER TABLE workout_routines ADD COLUMN daysOfWeek TEXT NOT NULL DEFAULT ''")
+            }
+        }
+
         fun getDatabase(context: Context): FitLifeDatabase {
             return INSTANCE ?: synchronized(this) {
                 val instance = Room.databaseBuilder(
@@ -55,7 +66,7 @@ abstract class FitLifeDatabase : RoomDatabase() {
                     FitLifeDatabase::class.java,
                     "fitlife_database"
                 )
-                    .addMigrations(MIGRATION_1_2)
+                    .addMigrations(MIGRATION_1_2, MIGRATION_2_3)
                     // Fallback to destructive migration only for future unhandled version changes
                     .fallbackToDestructiveMigration()
                     .build()

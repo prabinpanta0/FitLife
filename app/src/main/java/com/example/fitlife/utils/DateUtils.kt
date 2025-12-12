@@ -43,4 +43,24 @@ object DateUtils {
     fun getDaysOfWeek(): List<Pair<Int, String>> {
         return (0..6).map { it to getDayName(it) }
     }
+    
+    /**
+     * Returns a shortened display string for multiple days.
+     * Examples: "Mon", "Mon, Wed", "Mon, Wed, Fri", "Mon-Fri" for consecutive days
+     */
+    fun getMultipleDaysShort(days: List<Int>): String {
+        if (days.isEmpty()) return "N/A"
+        if (days.size == 1) return getShortDayName(days.first())
+        
+        val sortedDays = days.sorted()
+        
+        // Check if days are consecutive
+        val isConsecutive = sortedDays.zipWithNext().all { (a, b) -> b - a == 1 }
+        
+        return if (isConsecutive && sortedDays.size >= 3) {
+            "${getShortDayName(sortedDays.first())}-${getShortDayName(sortedDays.last())}"
+        } else {
+            sortedDays.joinToString(", ") { getShortDayName(it) }
+        }
+    }
 }

@@ -114,7 +114,7 @@ class HomeFragment : Fragment() {
 
         if (userId == -1L) return
 
-        lifecycleScope.launch {
+        viewLifecycleOwner.lifecycleScope.launch {
             // Observe routines
             app.workoutRepository.getRoutinesWithExercises(userId).collect { routines ->
                 updateUpcomingRoutines(routines)
@@ -123,7 +123,7 @@ class HomeFragment : Fragment() {
         }
 
         // Observe progress
-        lifecycleScope.launch {
+        viewLifecycleOwner.lifecycleScope.launch {
             combine(
                 app.workoutRepository.getCompletedRoutineCount(userId),
                 app.workoutRepository.getTotalScheduledRoutineCount(userId)
@@ -137,7 +137,7 @@ class HomeFragment : Fragment() {
 
     private fun updateUpcomingRoutines(routines: List<RoutineWithExercises>) {
         val upcomingRoutines = routines
-            .filter { it.routine.dayOfWeek >= 0 && !it.routine.isCompleted }
+            .filter { it.routine.getDaysAsList().isNotEmpty() && !it.routine.isCompleted }
             .take(5)
 
         routineAdapter.submitList(upcomingRoutines)
@@ -148,7 +148,7 @@ class HomeFragment : Fragment() {
 
     private fun updateTodayWorkout(routines: List<RoutineWithExercises>) {
         val currentDay = DateUtils.getCurrentDayOfWeek()
-        val todayRoutine = routines.find { it.routine.dayOfWeek == currentDay && !it.routine.isCompleted }
+        val todayRoutine = routines.find { it.routine.containsDay(currentDay) && !it.routine.isCompleted }
 
         if (todayRoutine != null) {
             binding.llTodayContent.visibility = View.VISIBLE
