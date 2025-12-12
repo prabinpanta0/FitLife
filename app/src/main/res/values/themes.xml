@@ -48,7 +48,7 @@
     <!-- Splash Screen Theme -->
     <style name="Theme.FitLife.Splash" parent="Theme.SplashScreen">
         <item name="windowSplashScreenBackground">@color/cloud_dancer</item>
-        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_fitness_splash</item>
+        <item name="windowSplashScreenAnimatedIcon">@mipmap/ic_launcher</item>
         <item name="windowSplashScreenIconBackgroundColor">@color/primary</item>
         <item name="postSplashScreenTheme">@style/Theme.FitLife</item>
     </style>

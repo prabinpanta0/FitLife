@@ -6,7 +6,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:padding="24dp">
 
         <!-- Logo/App Icon -->
-        <ImageView android:id="@+id/tvAppIcon" android:layout_marginTop="48dp" android:layout_width="70dp" android:layout_height="70dp" android:contentDescription="@string/app_name" android:src="@drawable/ic_fitness_splash" app:layout_constraintEnd_toEndOf="parent" app:layout_constraintStart_toStartOf="parent" app:layout_constraintTop_toTopOf="parent" />
+        <ImageView android:id="@+id/tvAppIcon" android:layout_marginTop="48dp" android:layout_width="70dp" android:layout_height="70dp" android:contentDescription="@string/app_name" android:src="@mipmap/ic_launcher" app:layout_constraintEnd_toEndOf="parent" app:layout_constraintStart_toStartOf="parent" app:layout_constraintTop_toTopOf="parent" />
 
         <!-- Title -->
         <TextView android:id="@+id/tvTitle" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/create_account" android:textSize="28sp" android:textStyle="bold" android:textColor="?attr/colorPrimary" android:layout_marginTop="8dp" app:layout_constraintEnd_toEndOf="parent" app:layout_constraintStart_toStartOf="parent" app:layout_constraintTop_toBottomOf="@+id/tvAppIcon" />
