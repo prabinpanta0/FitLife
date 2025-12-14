@@ -103,40 +103,42 @@ app/src/main/
 
 ### Application Architecture (Layer Diagram)
 
-![Application Architecture](diagram_mermaid/image.png)
+![Application Architecture](diagram/image.png)
 
 ### Data Flow Diagram (Level 0 - Context)
 
-![Data Flow Diagram](diagram_mermaid/image-1.png)
+![Data Flow Diagram](diagram/image-1.png)
 
 ### Data Flow Diagram (Level 1 - Detailed)
 
-![Data Flow Diagram](diagram_mermaid/image-2.png)
+![Data Flow Diagram](diagram/image-2.png)
 
 ### Entity Relationship Diagram
 
-![Entity Relation Diagram](diagram_mermaid/image-3.png)
+![Entity Relation Diagram](diagram/image-3.png)
 
 ### User Authentication Flow
 
-![User Authentication Flow](diagram_mermaid/image-4.png)
+![User Authentication Flow](diagram/image-4.png)
 
 ### Navigation Flow Diagram
 
-![Navigation Flow Diagram](diagram_mermaid/image-6.png)
+![Navigation Flow Diagram](diagram/image-6.png)
 
 ### Workout Creation Process Flow
 
-![Workout Creation Process Flow](diagram_mermaid/image-7.png)
+![Workout Creation Process Flow](diagram/image-7.png)
 
 ### Component Diagram
 
-![Component Diagram](diagram_mermaid/image-8.png)
+![Component Diagram](diagram/image-8.png)
 
 ### Class Diagram (Core Models)
 
-![Class Diagram](diagram_mermaid/image-9.png)
+![Class Diagram](diagram/image-9.png)
 
+### Screen Hierarchy Diagram
+![Screen Hierarchy Diagram](diagram/image-10.png)
 ## Themes
 
 | Mode  | Name         | Background Color |
