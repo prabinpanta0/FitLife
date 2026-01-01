@@ -22,8 +22,7 @@
             android:layout_height="48dp"
             android:gravity="center"
             android:text="@string/day_mon"
-            android:textSize="12sp"
-            android:textStyle="bold"
+            style="@style/TextAppearance.Material3.LabelSmall"
             android:textColor="?attr/colorOnPrimary"
             android:background="@drawable/bg_circle_primary" />
 
@@ -40,9 +39,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/placeholder_routine_name"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                android:textColor="?attr/colorOnSurface"
+                style="@style/TextAppearance.Material3.TitleMedium"
                 android:maxLines="1"
                 android:ellipsize="end" />
 
@@ -58,7 +55,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/placeholder_exercises"
-                    android:textSize="12sp"
+                    style="@style/TextAppearance.Material3.BodySmall"
                     android:textColor="?attr/colorOnSurfaceVariant" />
 
                 <View
@@ -72,7 +69,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/placeholder_location_label"
-                    android:textSize="12sp"
+                    style="@style/TextAppearance.Material3.BodySmall"
                     android:textColor="?attr/colorOnSurfaceVariant"
                     android:visibility="gone" />
 

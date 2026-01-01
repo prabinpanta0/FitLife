@@ -23,16 +23,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/equipment_checklist"
-                android:textSize="24sp"
-                android:textStyle="bold"
-                android:textColor="?attr/colorOnSurface" />
+                style="@style/TextAppearance.Material3.HeadlineSmall" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:text="@string/weekly_equipment"
-                android:textSize="14sp"
+                style="@style/TextAppearance.Material3.BodyMedium"
                 android:textColor="?attr/colorOnSurfaceVariant" />
 
             <!-- Status Card -->
@@ -63,8 +61,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/all_equipment_ready"
-                            android:textSize="18sp"
-                            android:textStyle="bold"
+                            style="@style/TextAppearance.Material3.TitleMedium"
                             android:textColor="?attr/colorOnPrimary" />
 
                         <TextView
@@ -73,7 +70,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="4dp"
                             android:text="@string/placeholder_items_checked"
-                            android:textSize="14sp"
+                            style="@style/TextAppearance.Material3.BodyMedium"
                             android:textColor="?attr/colorOnPrimary"
                             android:alpha="0.9" />
 
@@ -150,7 +147,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
                     android:text="@string/checklist_empty"
-                    android:textSize="16sp"
+                    style="@style/TextAppearance.Material3.BodyLarge"
                     android:textColor="?attr/colorOnSurfaceVariant"
                     android:gravity="center" />
 

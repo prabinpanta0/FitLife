@@ -8,7 +8,6 @@
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/tilLocationName"
-        style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/location_name"
@@ -24,7 +23,6 @@
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/tilAddress"
-        style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
@@ -40,7 +38,7 @@
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/tilLocationType"
-        style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+        style="@style/Widget.Material3.TextInputLayout.FilledBox.ExposedDropdownMenu"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
@@ -59,7 +57,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
         android:text="@string/location_hint"
-        android:textSize="12sp"
+        style="@style/TextAppearance.Material3.BodySmall"
         android:textColor="?attr/colorOnSurfaceVariant" />
 
 </LinearLayout>

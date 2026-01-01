@@ -26,16 +26,14 @@
             android:layout_weight="1"
             android:layout_marginStart="12dp"
             android:text="@string/placeholder_category"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:textColor="?attr/colorOnSurface" />
+            style="@style/TextAppearance.Material3.TitleMedium" />
 
         <TextView
             android:id="@+id/tvCategoryCount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/placeholder_progress"
-            android:textSize="14sp"
+            style="@style/TextAppearance.Material3.BodyMedium"
             android:textColor="?attr/colorOnSurfaceVariant" />
 
     </LinearLayout>

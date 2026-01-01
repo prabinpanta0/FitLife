@@ -32,7 +32,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/greeting_morning"
-                    android:textSize="16sp"
+                    style="@style/TextAppearance.Material3.BodyLarge"
                     android:textColor="?attr/colorOnSurfaceVariant" />
 
                 <TextView
@@ -40,9 +40,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/placeholder_user"
-                    android:textSize="24sp"
-                    android:textStyle="bold"
-                    android:textColor="?attr/colorOnSurface" />
+                    style="@style/TextAppearance.Material3.HeadlineSmall" />
 
             </LinearLayout>
 
@@ -75,8 +73,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/weekly_progress"
+                    style="@style/TextAppearance.Material3.BodyMedium"
                     android:textColor="?attr/colorOnPrimary"
-                    android:textSize="14sp"
                     android:alpha="0.9" />
 
                 <LinearLayout
@@ -91,17 +89,16 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/placeholder_progress"
-                        android:textColor="?attr/colorOnPrimary"
-                        android:textSize="36sp"
-                        android:textStyle="bold" />
+                        style="@style/TextAppearance.Material3.DisplaySmall"
+                        android:textColor="?attr/colorOnPrimary" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
                         android:text="workouts\ncompleted"
+                        style="@style/TextAppearance.Material3.BodySmall"
                         android:textColor="?attr/colorOnPrimary"
-                        android:textSize="12sp"
                         android:alpha="0.9" />
 
                     <View
@@ -130,9 +127,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
             android:text="@string/todays_workout"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:textColor="?attr/colorOnSurface" />
+            style="@style/TextAppearance.Material3.TitleLarge" />
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/cardTodayWorkout"
@@ -176,16 +171,14 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/placeholder_routine_name"
-                            android:textSize="16sp"
-                            android:textStyle="bold"
-                            android:textColor="?attr/colorOnSurface" />
+                            style="@style/TextAppearance.Material3.TitleMedium" />
 
                         <TextView
                             android:id="@+id/tvTodayExerciseCount"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/placeholder_exercises"
-                            android:textSize="14sp"
+                            style="@style/TextAppearance.Material3.BodyMedium"
                             android:textColor="?attr/colorOnSurfaceVariant" />
 
                     </LinearLayout>
@@ -219,8 +212,8 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
                         android:text="@string/no_workout_today"
-                        android:textColor="?attr/colorOnSurfaceVariant"
-                        android:textSize="14sp" />
+                        style="@style/TextAppearance.Material3.BodyMedium"
+                        android:textColor="?attr/colorOnSurfaceVariant" />
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/btnAddWorkout"
@@ -242,9 +235,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
             android:text="@string/quick_actions"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:textColor="?attr/colorOnSurface" />
+            style="@style/TextAppearance.Material3.TitleLarge" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -282,8 +273,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
                         android:text="@string/nav_routines"
-                        android:textSize="12sp"
-                        android:textColor="?attr/colorOnSurface" />
+                        style="@style/TextAppearance.Material3.BodySmall" />
 
                 </LinearLayout>
 
@@ -318,8 +308,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
                         android:text="@string/nav_checklist"
-                        android:textSize="12sp"
-                        android:textColor="?attr/colorOnSurface" />
+                        style="@style/TextAppearance.Material3.BodySmall" />
 
                 </LinearLayout>
 
@@ -354,8 +343,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
                         android:text="@string/locations"
-                        android:textSize="12sp"
-                        android:textColor="?attr/colorOnSurface" />
+                        style="@style/TextAppearance.Material3.BodySmall" />
 
                 </LinearLayout>
 
@@ -376,16 +364,14 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/upcoming_routines"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                android:textColor="?attr/colorOnSurface" />
+                style="@style/TextAppearance.Material3.TitleLarge" />
 
             <TextView
                 android:id="@+id/tvViewAll"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/view_all"
-                android:textSize="14sp"
+                style="@style/TextAppearance.Material3.BodyMedium"
                 android:textColor="?attr/colorPrimary" />
 
         </LinearLayout>

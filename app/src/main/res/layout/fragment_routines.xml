@@ -23,9 +23,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/my_routines"
-                android:textSize="24sp"
-                android:textStyle="bold"
-                android:textColor="?attr/colorOnSurface" />
+                style="@style/TextAppearance.Material3.HeadlineSmall" />
 
             <!-- Week Day Filter Chips -->
             <HorizontalScrollView
@@ -131,13 +129,12 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
                     android:text="@string/no_routines"
-                    android:textSize="16sp"
+                    style="@style/TextAppearance.Material3.BodyLarge"
                     android:textColor="?attr/colorOnSurfaceVariant"
                     android:gravity="center" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnAddFirstRoutine"
-                    style="@style/Widget.FitLife.Button.Primary"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"

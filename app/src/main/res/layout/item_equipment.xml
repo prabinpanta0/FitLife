@@ -32,15 +32,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/placeholder_equipment_name"
-                android:textSize="16sp"
-                android:textColor="?attr/colorOnSurface" />
+                style="@style/TextAppearance.Material3.BodyLarge" />
 
             <TextView
                 android:id="@+id/tvEquipmentQuantity"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/placeholder_qty"
-                android:textSize="12sp"
+                style="@style/TextAppearance.Material3.BodySmall"
                 android:textColor="?attr/colorOnSurfaceVariant"
                 android:visibility="gone" />
 
